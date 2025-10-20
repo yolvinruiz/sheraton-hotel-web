@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservas - Sheraton Lima Historic Center</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Variables y reset */
+        :root {
+            --primary: #004792;
+            --secondary: #b38b59;
+            --light: #f8f9fa;
+            --dark: #333;
+            --gray: #6c757d;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-color: #f5f5f5;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .btn:hover {
+            background: #003366;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background: #9a764d;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        /* Header */
+        header {
+            background: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 40px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        
+        .user-info:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .user-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            box-shadow: var(--shadow);
+            border-radius: 4px;
+            width: 200px;
+            padding: 10px 0;
+            display: none;
+            z-index: 1001;
+        }
+        
+        .user-menu.active {
+            display: block;
+        }
+        
+        .user-menu-item {
+            padding: 10px 20px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .user-menu-item:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .user-menu-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 300px;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                        url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+        }
+        
+        /* Tabs Section */
+        .tabs-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .tabs {
+            display: flex;
+            background: var(--light);
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            background: white;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Search Section */
+        .search-section {
+            margin-bottom: 30px;
+        }
+        
+        .search-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        /* Filters Section */
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .filter-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .filter-title h3 {
+            color: var(--primary);
+        }
+        
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-group h4 {
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        
+        .filter-checkboxes {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-checkbox input {
+            margin: 0;
+        }
+        
+        /* Rooms Section */
+        .rooms-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-title h2 {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+        
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .room-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .room-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .room-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .room-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .room-card:hover .room-image img {
+            transform: scale(1.05);
+        }
+        
+        .room-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--secondary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .room-info {
+            padding: 20px;
+        }
+        
+        .room-info h3 {
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .room-price {
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin: 10px 0;
+        }
+        
+        .room-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
+        }
+        
+        .room-features span {
+            background: var(--light);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .room-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* Recommendations Section */
+        .recommendations {
+            margin-bottom: 40px;
+        }
+        
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .recommendation-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .recommendation-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .recommendation-image {
+            height: 150px;
+            overflow: hidden;
+        }
+        
+        .recommendation-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .recommendation-card:hover .recommendation-image img {
+            transform: scale(1.05);
+        }
+        
+        .recommendation-info {
+            padding: 15px;
+        }
+        
+        .recommendation-info h4 {
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        
+        .recommendation-price {
+            color: var(--secondary);
+            font-weight: bold;
+            margin: 8px 0;
+        }
+        
+        .recommendation-type {
+            display: inline-block;
+            background: var(--light);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+        
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 50px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column h3 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .footer-links li {
+            margin-bottom: 8px;
+        }
+        
+        .footer-links a {
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        
+        .social-links a:hover {
+            background: var(--secondary);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Cart Notification */
+        .cart-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .cart-notification.active {
+            display: flex;
+            animation: fadeIn 0.3s, fadeOut 0.3s 2.7s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(20px); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .search-form {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 80%;
+                height: calc(100vh - 70px);
+                background: white;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding-top: 40px;
+                transition: var(--transition);
+                box-shadow: var(--shadow);
+            }
+            
+            .nav-links.active {
+                left: 0;
+            }
+            
+            .user-name {
+                display: none;
+            }
+            
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-options {
+                flex-direction: column;
+            }
+            
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                text-align: center;
+                border-bottom: 1px solid #ddd;
+                border-left: 3px solid transparent;
+            }
+            
+            .tab.active {
+                border-bottom: 1px solid #ddd;
+                border-left: 3px solid var(--primary);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <img src="https://cache.marriott.com/content/dam/marriott-digital/si/global-property-shared/en_us/logo/assets/si_logo_L.png" alt="Sheraton Logo">
+                </div>
+            
+                
+                <div class="nav-user">
+                    <div class="user-info" id="user-menu-toggle">
+                        <div class="user-avatar">MC</div>
+                        <span class="user-name">Miguel Castillo</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    
+                    <div class="user-menu" id="user-menu">
+                        <div class="user-menu-item" id="perfil-btn">
+                            <i class="fas fa-user"></i>
+                            Ver Perfil
+                        </div>
+                        <div class="user-menu-item">
+                            <i class="fas fa-cog"></i>
+                            Configuración
+                        </div>
+                        <div class="user-menu-item" id="history-btn">
+                            <i class="fas fa-history"></i>
+                            Historial de Reservas
+                        </div>
+                        <div class="user-menu-item" id="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Cerrar Sesión
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Reserva tu Estancia Perfecta</h1>
+                <p>Encuentra la habitación ideal para tu próxima visita al Sheraton Lima</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tabs Section -->
+    <section class="container">
+        <div class="tabs-section">
+            <div class="tabs">
+                <div class="tab active" data-tab="rooms">Habitaciones</div>
+                <div class="tab" data-tab="recommendations">Recomendaciones</div>
+            </div>
+            
+            <!-- Rooms Tab Content -->
+            <div class="tab-content active" id="rooms-tab">
+                <!-- Search Section -->
+                <div class="search-section">
+                    <h3 style="margin-bottom: 20px; color: var(--primary);">Buscar Habitaciones</h3>
+                    <div class="search-form">
+                        <div class="form-group">
+                            <label for="checkin">Fecha de Entrada</label>
+                            <input type="date" id="checkin" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="checkout">Fecha de Salida</label>
+                            <input type="date" id="checkout" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="adults">Adultos</label>
+                            <select id="adults" class="form-control">
+                                <option value="1">1 Adulto</option>
+                                <option value="2" selected>2 Adultos</option>
+                                <option value="3">3 Adultos</option>
+                                <option value="4">4 Adultos</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="children">Niños</label>
+                            <select id="children" class="form-control">
+                                <option value="0" selected>0 Niños</option>
+                                <option value="1">1 Niño</option>
+                                <option value="2">2 Niños</option>
+                                <option value="3">3 Niños</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="search">Buscar</label>
+                            <input type="text" id="search" class="form-control" placeholder="Buscar por nombre...">
+                        </div>
+                        
+                        <div class="form-group" style="justify-content: flex-end;">
+                            <button class="btn" id="search-btn">Buscar Habitaciones</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filters Section -->
+                <div class="filters">
+                    <div class="filter-title">
+                        <h3>Filtrar Habitaciones</h3>
+                        <button class="btn-outline btn" id="clear-filters">Limpiar Filtros</button>
+                    </div>
+                    
+                    <div class="filter-options">
+                        <div class="filter-group">
+                            <h4>Tipo de Habitación</h4>
+                            <div class="filter-checkboxes">
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" name="room-type" value="estandar" checked> Habitación Estándar
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" name="room-type" value="suite" checked> Suite
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" name="room-type" value="familiar" checked> Habitación Familiar
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" name="room-type" value="ejecutiva" checked> Habitación Ejecutiva
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <h4>Precio por Noche</h4>
+                            <div class="filter-checkboxes">
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" name="price-range" value="100-200"> S/100 - S/200
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" name="price-range" value="200-300" checked> S/200 - S/300
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" name="price-range" value="300-500"> S/300 - S/500
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" name="price-range" value="500+"> S/500+
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <h4>Comodidades</h4>
+                            <div class="filter-checkboxes">
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" name="amenities" value="wifi" checked> WiFi
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" name="amenities" value="tv"> TV por Cable
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" name="amenities" value="ac"> Aire Acondicionado
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" name="amenities" value="vista"> Vista al Mar
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Rooms Section -->
+                <div class="rooms-section">
+                    <div class="section-title">
+                        <h2>Habitaciones Disponibles</h2>
+                        <div>
+                            <span>Ordenar por: </span>
+                            <select id="sort-rooms" style="padding: 8px; border-radius: 4px; border: 1px solid #ddd;">
+                                <option value="price-asc">Precio (Menor a Mayor)</option>
+                                <option value="price-desc">Precio (Mayor a Menor)</option>
+                                <option value="name">Nombre</option>
+                                <option value="popularity">Popularidad</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="rooms-grid" id="rooms-container">
+                        <!-- Las habitaciones se cargarán dinámicamente aquí -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recommendations Tab Content -->
+            <div class="tab-content" id="recommendations-tab">
+                <div class="recommendations">
+                    <div class="section-title">
+                        <h2>Recomendaciones Especiales</h2>
+                        <div>
+                            <span>Filtrar por: </span>
+                            <select id="filter-recommendations" style="padding: 8px; border-radius: 4px; border: 1px solid #ddd;">
+                                <option value="all">Todos</option>
+                                <option value="food">Comida</option>
+                                <option value="service">Servicios</option>
+                                <option value="activity">Actividades</option>
+                                <option value="drink">Bebidas</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="recommendations-grid" id="recommendations-container">
+                        <!-- Las recomendaciones se cargarán dinámicamente aquí -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Sheraton Lima</h3>
+                    <p>Experimente el lujo en el corazón del centro histórico de Lima. Ofrecemos servicios de clase mundial y hospitalidad excepcional.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Reservas</a></li>
+                        <li><a href="#">Habitaciones</a></li>
+                        <li><a href="#">Servicios</a></li>
+                        <li><a href="#">Galería</a></li>
+                        <li><a href="#">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Servicios</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Spa & Bienestar</a></li>
+                        <li><a href="#">Restaurantes</a></li>
+                        <li><a href="#">Eventos</a></li>
+                        <li><a href="#">Business Center</a></li>
+                        <li><a href="#">Actividades</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contacto</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> Av. Paseo de la República 170, Lima 15001, Perú</li>
+                        <li><i class="fas fa-phone"></i> +51 1 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@sheratonlima.com</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 Sheraton Lima Historic Center. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Notification -->
+    <div class="cart-notification" id="cart-notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-text">Servicio agregado correctamente</span>
+    </div>
+
+    <script>
+        // Datos de las habitaciones
+        const rooms = [
+            {
+                id: 1,
+                name: "Habitación Deluxe",
+                type: "estandar",
+                price: 180,
+                image: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                description: "Amplia habitación con vista a la ciudad, cama king-size y área de trabajo.",
+                features: ["30 m²", "Vista Ciudad", "WiFi Gratis"],
+                amenities: ["wifi", "tv", "ac"],
+                badge: "Popular",
+                popularity: 4.8
+            },
+            {
+                id: 2,
+                name: "Suite Ejecutiva",
+                type: "suite",
+                price: 320,
+                image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80",
+                description: "Elegante suite con sala separada, ideal para viajes de negocios.",
+                features: ["55 m²", "Sala Separada", "Acceso Lounge"],
+                amenities: ["wifi", "tv", "ac"],
+                badge: "Oferta",
+                popularity: 4.6
+            },
+            {
+                id: 3,
+                name: "Suite Presidencial",
+                type: "suite",
+                price: 650,
+                image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80",
+                description: "La máxima expresión de lujo con amplio espacio y servicios exclusivos.",
+                features: ["120 m²", "Terraza Privada", "Servicio Butler"],
+                amenities: ["wifi", "tv", "ac", "vista"],
+                badge: "",
+                popularity: 4.9
+            },
+            {
+                id: 4,
+                name: "Habitación Familiar",
+                type: "familiar",
+                price: 240,
+                image: "https://images.unsplash.com/photo-1586105251261-72a756497a11?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1856&q=80",
+                description: "Espaciosa habitación perfecta para familias, con camas adicionales.",
+                features: ["45 m²", "2 Camas Dobles", "Zona de Juegos"],
+                amenities: ["wifi", "tv", "ac"],
+                badge: "Familiar",
+                popularity: 4.7
+            },
+            {
+                id: 5,
+                name: "Habitación Vista al Mar",
+                type: "ejecutiva",
+                price: 290,
+                image: "https://images.unsplash.com/photo-1568495248636-6432b97bd949?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
+                description: "Disfruta de impresionantes vistas al océano desde tu habitación.",
+                features: ["35 m²", "Vista al Mar", "Balcón Privado"],
+                amenities: ["wifi", "tv", "ac", "vista"],
+                badge: "",
+                popularity: 4.5
+            },
+            {
+                id: 6,
+                name: "Habitación Estándar",
+                type: "estandar",
+                price: 120,
+                image: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                description: "Acogedora habitación con todas las comodidades esenciales.",
+                features: ["25 m²", "Cama Queen", "Baño Privado"],
+                amenities: ["wifi", "tv"],
+                badge: "Económica",
+                popularity: 4.2
+            },
+            {
+                id: 7,
+                name: "Suite Nupcial",
+                type: "suite",
+                price: 450,
+                image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
+                description: "Romántica suite perfecta para lunas de miel y ocasiones especiales.",
+                features: ["70 m²", "Jacuzzi", "Desayuno Incluido"],
+                amenities: ["wifi", "tv", "ac", "vista"],
+                badge: "Romántica",
+                popularity: 4.9
+            },
+            {
+                id: 8,
+                name: "Habitación Ejecutiva",
+                type: "ejecutiva",
+                price: 270,
+                image: "https://images.unsplash.com/photo-1582582621959-48d27397dc69?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
+                description: "Ideal para viajeros de negocios con amplio espacio de trabajo.",
+                features: ["40 m²", "Escritorio Ejecutivo", "Acceso a Business Center"],
+                amenities: ["wifi", "tv", "ac"],
+                badge: "Ejecutiva",
+                popularity: 4.6
+            },
+            {
+                id: 9,
+                name: "Suite Familiar",
+                type: "familiar",
+                price: 380,
+                image: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                description: "Amplia suite con dos habitaciones separadas, ideal para familias.",
+                features: ["80 m²", "2 Habitaciones", "Cocina Pequeña"],
+                amenities: ["wifi", "tv", "ac"],
+                badge: "Familiar",
+                popularity: 4.7
+            },
+            {
+                id: 10,
+                name: "Habitación Premium",
+                type: "estandar",
+                price: 220,
+                image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1032&q=80",
+                description: "Habitación premium con acabados de lujo y vistas panorámicas.",
+                features: ["35 m²", "Vista Panorámica", "Minibar"],
+                amenities: ["wifi", "tv", "ac"],
+                badge: "Premium",
+                popularity: 4.8
+            }
+        ];
+
+        // Datos de las recomendaciones
+        const recommendations = [
+            {
+                id: 1,
+                name: "Cena Gourmet",
+                type: "food",
+                price: 75,
+                image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2065&q=80",
+                description: "Experiencia culinaria exclusiva en nuestro restaurante principal."
+            },
+            {
+                id: 2,
+                name: "Masaje Relajante",
+                type: "service",
+                price: 90,
+                image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                description: "Disfruta de un masaje rejuvenecedor en nuestro spa de lujo."
+            },
+            {
+                id: 3,
+                name: "Tour por la Ciudad",
+                type: "activity",
+                price: 45,
+                image: "https://images.unsplash.com/photo-1470337458703-46ad1756a187?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
+                description: "Descubre los principales atractivos de Lima con nuestro guía experto."
+            },
+            {
+                id: 4,
+                name: "Cocteles Premium",
+                type: "drink",
+                price: 15,
+                image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2157&q=80",
+                description: "Disfruta de nuestros exclusivos cocteles en el bar del hotel."
+            },
+            {
+                id: 5,
+                name: "Desayuno Buffet",
+                type: "food",
+                price: 25,
+                image: "https://images.unsplash.com/photo-1551218808-94e220e084d2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                description: "Amplio buffet con opciones internacionales y locales."
+            },
+            {
+                id: 6,
+                name: "Tratamiento Facial",
+                type: "service",
+                price: 70,
+                image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                description: "Rejuvenece tu piel con nuestro tratamiento facial premium."
+            }
+        ];
+
+        // Estado de la aplicación
+        let filteredRooms = [...rooms];
+        let filteredRecommendations = [...recommendations];
+        let selectedServices = [];
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            // Renderizar habitaciones y recomendaciones
+            renderRooms(filteredRooms);
+            renderRecommendations(filteredRecommendations);
+            
+            // Configurar eventos
+            setupEventListeners();
+            
+            // Establecer fechas por defecto
+            setDefaultDates();
+        });
+
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Toggle menu for mobile
+            document.querySelector('.menu-toggle').addEventListener('click', function() {
+                document.querySelector('.nav-links').classList.toggle('active');
+            });
+
+            // Toggle user menu
+            const userMenuToggle = document.getElementById('user-menu-toggle');
+            const userMenu = document.getElementById('user-menu');
+            
+            userMenuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userMenu.classList.toggle('active');
+            });
+
+            // Close user menu when clicking outside
+            document.addEventListener('click', function() {
+                userMenu.classList.remove('active');
+            });
+
+            // Prevent user menu from closing when clicking inside
+            userMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+
+            // Tabs functionality
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Hide all tab contents
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    // Show corresponding tab content
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+
+            // Search functionality
+            document.getElementById('search-btn').addEventListener('click', applyFilters);
+            document.getElementById('search').addEventListener('input', applyFilters);
+            
+            // Filter functionality
+            document.querySelectorAll('input[name="room-type"], input[name="price-range"], input[name="amenities"]').forEach(input => {
+                input.addEventListener('change', applyFilters);
+            });
+            
+            // Sort functionality
+            document.getElementById('sort-rooms').addEventListener('change', applyFilters);
+            
+            // Clear filters
+            document.getElementById('clear-filters').addEventListener('click', clearFilters);
+            
+            // perfil
+            document.getElementById('perfil-btn').addEventListener('click', function() {
+                window.location.href = 'perfil.html';
+            });
+            // Filter recommendations
+            document.getElementById('history-btn').addEventListener('click', function() {
+                window.location.href = 'historial.html';
+            });
+
+    
+            // Handle logout - REDIRIGE A INDEX.HTML
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                if(confirm('¿Está seguro de que desea cerrar sesión?')) {
+                    window.location.href = 'index.html';
+                }
+            });
+        }
+
+        // Establecer fechas por defecto
+        function setDefaultDates() {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            document.getElementById('checkin').valueAsDate = today;
+            document.getElementById('checkout').valueAsDate = tomorrow;
+        }
+
+        // Aplicar filtros y búsqueda
+        function applyFilters() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const selectedRoomTypes = Array.from(document.querySelectorAll('input[name="room-type"]:checked')).map(cb => cb.value);
+            const selectedPriceRanges = Array.from(document.querySelectorAll('input[name="price-range"]:checked')).map(cb => cb.value);
+            const selectedAmenities = Array.from(document.querySelectorAll('input[name="amenities"]:checked')).map(cb => cb.value);
+            const sortBy = document.getElementById('sort-rooms').value;
+            
+            // Filtrar habitaciones
+            filteredRooms = rooms.filter(room => {
+                // Filtrar por término de búsqueda
+                if (searchTerm && !room.name.toLowerCase().includes(searchTerm) && 
+                    !room.description.toLowerCase().includes(searchTerm)) {
+                    return false;
+                }
+                
+                // Filtrar por tipo de habitación
+                if (selectedRoomTypes.length > 0 && !selectedRoomTypes.includes(room.type)) {
+                    return false;
+                }
+                
+                // Filtrar por rango de precio
+                if (selectedPriceRanges.length > 0) {
+                    let inPriceRange = false;
+                    
+                    selectedPriceRanges.forEach(range => {
+                        if (range === '100-200' && room.price >= 100 && room.price <= 200) inPriceRange = true;
+                        if (range === '200-300' && room.price >= 200 && room.price <= 300) inPriceRange = true;
+                        if (range === '300-500' && room.price >= 300 && room.price <= 500) inPriceRange = true;
+                        if (range === '500+' && room.price > 500) inPriceRange = true;
+                    });
+                    
+                    if (!inPriceRange) return false;
+                }
+                
+                // Filtrar por comodidades
+                if (selectedAmenities.length > 0) {
+                    const hasAllAmenities = selectedAmenities.every(amenity => 
+                        room.amenities.includes(amenity)
+                    );
+                    
+                    if (!hasAllAmenities) return false;
+                }
+                
+                return true;
+            });
+            
+            // Ordenar habitaciones
+            sortRooms(filteredRooms, sortBy);
+            
+            // Renderizar habitaciones filtradas
+            renderRooms(filteredRooms);
+        }
+
+        // Ordenar habitaciones
+        function sortRooms(roomsToSort, sortBy) {
+            switch(sortBy) {
+                case 'price-asc':
+                    roomsToSort.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-desc':
+                    roomsToSort.sort((a, b) => b.price - a.price);
+                    break;
+                case 'name':
+                    roomsToSort.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'popularity':
+                    roomsToSort.sort((a, b) => b.popularity - a.popularity);
+                    break;
+            }
+        }
+
+        // Limpiar filtros - SOLO LOS FILTROS DE HABITACIONES
+        function clearFilters() {
+            document.getElementById('search').value = '';
+            
+            // Solo marcar como checked los checkboxes de filtros de habitaciones
+            document.querySelectorAll('#rooms-tab input[type="checkbox"]').forEach(cb => {
+                cb.checked = true;
+            });
+            
+            document.getElementById('sort-rooms').value = 'price-asc';
+            
+            applyFilters();
+        }
+
+        // Filtrar recomendaciones
+        function filterRecommendations() {
+            const filterType = document.getElementById('filter-recommendations').value;
+            
+            if (filterType === 'all') {
+                filteredRecommendations = [...recommendations];
+            } else {
+                filteredRecommendations = recommendations.filter(rec => rec.type === filterType);
+            }
+            
+            renderRecommendations(filteredRecommendations);
+        }
+
+        // Renderizar habitaciones
+        function renderRooms(roomsToRender) {
+            const container = document.getElementById('rooms-container');
+            
+            if (roomsToRender.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--gray);">No se encontraron habitaciones que coincidan con los criterios de búsqueda.</p>';
+                return;
+            }
+            
+            container.innerHTML = roomsToRender.map(room => `
+                <div class="room-card">
+                    <div class="room-image">
+                        <img src="${room.image}" alt="${room.name}">
+                        ${room.badge ? `<div class="room-badge">${room.badge}</div>` : ''}
+                    </div>
+                    <div class="room-info">
+                        <h3>${room.name}</h3>
+                        <p>${room.description}</p>
+                        <div class="room-features">
+                            ${room.features.map(feature => `<span>${feature}</span>`).join('')}
+                        </div>
+                        <div class="room-price">S/${room.price} / noche</div>
+                        <div class="room-actions">
+                            <button class="btn" onclick="reserveRoom(${room.id})">Reservar</button>
+                            <button class="btn-outline btn">Ver Detalles</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Renderizar recomendaciones
+        function renderRecommendations(recommendationsToRender) {
+            const container = document.getElementById('recommendations-container');
+            
+            if (recommendationsToRender.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--gray);">No se encontraron recomendaciones que coincidan con el filtro seleccionado.</p>';
+                return;
+            }
+            
+            container.innerHTML = recommendationsToRender.map(rec => `
+                <div class="recommendation-card">
+                    <div class="recommendation-image">
+                        <img src="${rec.image}" alt="${rec.name}">
+                    </div>
+                    <div class="recommendation-info">
+                        <span class="recommendation-type">${getTypeLabel(rec.type)}</span>
+                        <h4>${rec.name}</h4>
+                        <p>${rec.description}</p>
+                        <div class="recommendation-price">S/${rec.price} ${getPriceUnit(rec.type)}</div>
+                        <button class="btn-success btn" style="width: 100%;" onclick="addService(${rec.id})">Agregar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Obtener etiqueta para el tipo de recomendación
+        function getTypeLabel(type) {
+            const labels = {
+                'food': 'Comida',
+                'service': 'Servicio',
+                'activity': 'Actividad',
+                'drink': 'Bebida'
+            };
+            return labels[type] || 'Otro';
+        }
+
+        // Obtener unidad de precio para el tipo de recomendación
+        function getPriceUnit(type) {
+            const units = {
+                'food': 'por persona',
+                'service': 'por sesión',
+                'activity': 'por persona',
+                'drink': 'por bebida'
+            };
+            return units[type] || '';
+        }
+
+        // Reservar habitación
+        function reserveRoom(roomId) {
+            const room = rooms.find(r => r.id === roomId);
+            if (room) {
+                alert(`Has seleccionado la ${room.name} por S/${room.price} por noche. Serás redirigido a la página de confirmación de reserva.`);
+                window.location.href = "reservas.html";
+            }
+        }
+
+        // Agregar servicio a la reserva
+        function addService(serviceId) {
+            const service = recommendations.find(r => r.id === serviceId);
+            if (service) {
+                selectedServices.push(service);
+                
+                // Mostrar notificación
+                const notification = document.getElementById('cart-notification');
+                const notificationText = document.getElementById('notification-text');
+                notificationText.textContent = `${service.name} agregado correctamente`;
+                notification.classList.add('active');
+                
+                // Ocultar notificación después de 3 segundos
+                setTimeout(() => {
+                    notification.classList.remove('active');
+                }, 3000);
+                
+                console.log('Servicios seleccionados:', selectedServices);
+            }
+        }
+    </script>
+</body>
+</html>
