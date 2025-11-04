@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservas - Sheraton Lima Historic Center</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
     <style>
         /* Variables y reset */
         :root {
@@ -667,6 +668,48 @@
                 border-left: 3px solid var(--primary);
             }
         }
+
+        /* Estado de disponibilidad */
+        .no-disponible {
+            opacity: 0.7;
+            position: relative;
+        }
+
+        .no-disponible::after {
+            content: "NO DISPONIBLE";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .no-disponible .room-image::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn:disabled:hover {
+            background: #6c757d;
+            transform: none;
+        }
     </style>
 </head>
 <body>
@@ -681,8 +724,8 @@
                 
                 <div class="nav-user">
                     <div class="user-info" id="user-menu-toggle">
-                        <div class="user-avatar">MC</div>
-                        <span class="user-name">Miguel Castillo</span>
+                        <div class="user-avatar" id="user-avatar">YH</div>
+                        <span class="user-name" id="user-name">Yareth Hooper</span>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     
@@ -728,7 +771,7 @@
         <div class="tabs-section">
             <div class="tabs">
                 <div class="tab active" data-tab="rooms">Habitaciones</div>
-                <div class="tab" data-tab="recommendations">Recomendaciones</div>
+                <div class="tab" data-tab="recommendations">Servicios Adicionales</div>
             </div>
             
             <!-- Rooms Tab Content -->
@@ -788,19 +831,8 @@
                     <div class="filter-options">
                         <div class="filter-group">
                             <h4>Tipo de Habitación</h4>
-                            <div class="filter-checkboxes">
-                                <label class="filter-checkbox">
-                                    <input type="checkbox" name="room-type" value="estandar" checked> Habitación Estándar
-                                </label>
-                                <label class="filter-checkbox">
-                                    <input type="checkbox" name="room-type" value="suite" checked> Suite
-                                </label>
-                                <label class="filter-checkbox">
-                                    <input type="checkbox" name="room-type" value="familiar" checked> Habitación Familiar
-                                </label>
-                                <label class="filter-checkbox">
-                                    <input type="checkbox" name="room-type" value="ejecutiva" checked> Habitación Ejecutiva
-                                </label>
+                            <div class="filter-checkboxes" id="room-type-filters">
+                                <!-- Los tipos se cargarán dinámicamente -->
                             </div>
                         </div>
                         
@@ -808,7 +840,7 @@
                             <h4>Precio por Noche</h4>
                             <div class="filter-checkboxes">
                                 <label class="filter-checkbox">
-                                    <input type="checkbox" name="price-range" value="100-200"> S/100 - S/200
+                                    <input type="checkbox" name="price-range" value="100-200" checked> S/100 - S/200
                                 </label>
                                 <label class="filter-checkbox">
                                     <input type="checkbox" name="price-range" value="200-300" checked> S/200 - S/300
@@ -826,16 +858,13 @@
                             <h4>Comodidades</h4>
                             <div class="filter-checkboxes">
                                 <label class="filter-checkbox">
-                                    <input type="checkbox" name="amenities" value="wifi" checked> WiFi
+                                    <input type="checkbox" name="amenities" value="desayuno" checked> Desayuno Incluido
                                 </label>
                                 <label class="filter-checkbox">
-                                    <input type="checkbox" name="amenities" value="tv"> TV por Cable
+                                    <input type="checkbox" name="amenities" value="vista"> Vista Especial
                                 </label>
                                 <label class="filter-checkbox">
-                                    <input type="checkbox" name="amenities" value="ac"> Aire Acondicionado
-                                </label>
-                                <label class="filter-checkbox">
-                                    <input type="checkbox" name="amenities" value="vista"> Vista al Mar
+                                    <input type="checkbox" name="amenities" value="wifi"> WiFi
                                 </label>
                             </div>
                         </div>
@@ -852,13 +881,13 @@
                                 <option value="price-asc">Precio (Menor a Mayor)</option>
                                 <option value="price-desc">Precio (Mayor a Menor)</option>
                                 <option value="name">Nombre</option>
-                                <option value="popularity">Popularidad</option>
+                                <option value="capacidad">Capacidad</option>
                             </select>
                         </div>
                     </div>
                     
                     <div class="rooms-grid" id="rooms-container">
-                        <!-- Las habitaciones se cargarán dinámicamente aquí -->
+                        <p>Cargando habitaciones...</p>
                     </div>
                 </div>
             </div>
@@ -867,7 +896,7 @@
             <div class="tab-content" id="recommendations-tab">
                 <div class="recommendations">
                     <div class="section-title">
-                        <h2>Recomendaciones Especiales</h2>
+                        <h2>Servicios Adicionales</h2>
                         <div>
                             <span>Filtrar por: </span>
                             <select id="filter-recommendations" style="padding: 8px; border-radius: 4px; border: 1px solid #ddd;">
@@ -881,7 +910,7 @@
                     </div>
                     
                     <div class="recommendations-grid" id="recommendations-container">
-                        <!-- Las recomendaciones se cargarán dinámicamente aquí -->
+                        <p>Cargando servicios...</p>
                     </div>
                 </div>
             </div>
@@ -947,492 +976,12 @@
         <span id="notification-text">Servicio agregado correctamente</span>
     </div>
 
-    <script>
-        // Datos de las habitaciones
-        const rooms = [
-            {
-                id: 1,
-                name: "Habitación Deluxe",
-                type: "estandar",
-                price: 180,
-                image: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                description: "Amplia habitación con vista a la ciudad, cama king-size y área de trabajo.",
-                features: ["30 m²", "Vista Ciudad", "WiFi Gratis"],
-                amenities: ["wifi", "tv", "ac"],
-                badge: "Popular",
-                popularity: 4.8
-            },
-            {
-                id: 2,
-                name: "Suite Ejecutiva",
-                type: "suite",
-                price: 320,
-                image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80",
-                description: "Elegante suite con sala separada, ideal para viajes de negocios.",
-                features: ["55 m²", "Sala Separada", "Acceso Lounge"],
-                amenities: ["wifi", "tv", "ac"],
-                badge: "Oferta",
-                popularity: 4.6
-            },
-            {
-                id: 3,
-                name: "Suite Presidencial",
-                type: "suite",
-                price: 650,
-                image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80",
-                description: "La máxima expresión de lujo con amplio espacio y servicios exclusivos.",
-                features: ["120 m²", "Terraza Privada", "Servicio Butler"],
-                amenities: ["wifi", "tv", "ac", "vista"],
-                badge: "",
-                popularity: 4.9
-            },
-            {
-                id: 4,
-                name: "Habitación Familiar",
-                type: "familiar",
-                price: 240,
-                image: "https://images.unsplash.com/photo-1586105251261-72a756497a11?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1856&q=80",
-                description: "Espaciosa habitación perfecta para familias, con camas adicionales.",
-                features: ["45 m²", "2 Camas Dobles", "Zona de Juegos"],
-                amenities: ["wifi", "tv", "ac"],
-                badge: "Familiar",
-                popularity: 4.7
-            },
-            {
-                id: 5,
-                name: "Habitación Vista al Mar",
-                type: "ejecutiva",
-                price: 290,
-                image: "https://images.unsplash.com/photo-1568495248636-6432b97bd949?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
-                description: "Disfruta de impresionantes vistas al océano desde tu habitación.",
-                features: ["35 m²", "Vista al Mar", "Balcón Privado"],
-                amenities: ["wifi", "tv", "ac", "vista"],
-                badge: "",
-                popularity: 4.5
-            },
-            {
-                id: 6,
-                name: "Habitación Estándar",
-                type: "estandar",
-                price: 120,
-                image: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                description: "Acogedora habitación con todas las comodidades esenciales.",
-                features: ["25 m²", "Cama Queen", "Baño Privado"],
-                amenities: ["wifi", "tv"],
-                badge: "Económica",
-                popularity: 4.2
-            },
-            {
-                id: 7,
-                name: "Suite Nupcial",
-                type: "suite",
-                price: 450,
-                image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
-                description: "Romántica suite perfecta para lunas de miel y ocasiones especiales.",
-                features: ["70 m²", "Jacuzzi", "Desayuno Incluido"],
-                amenities: ["wifi", "tv", "ac", "vista"],
-                badge: "Romántica",
-                popularity: 4.9
-            },
-            {
-                id: 8,
-                name: "Habitación Ejecutiva",
-                type: "ejecutiva",
-                price: 270,
-                image: "https://images.unsplash.com/photo-1582582621959-48d27397dc69?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
-                description: "Ideal para viajeros de negocios con amplio espacio de trabajo.",
-                features: ["40 m²", "Escritorio Ejecutivo", "Acceso a Business Center"],
-                amenities: ["wifi", "tv", "ac"],
-                badge: "Ejecutiva",
-                popularity: 4.6
-            },
-            {
-                id: 9,
-                name: "Suite Familiar",
-                type: "familiar",
-                price: 380,
-                image: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                description: "Amplia suite con dos habitaciones separadas, ideal para familias.",
-                features: ["80 m²", "2 Habitaciones", "Cocina Pequeña"],
-                amenities: ["wifi", "tv", "ac"],
-                badge: "Familiar",
-                popularity: 4.7
-            },
-            {
-                id: 10,
-                name: "Habitación Premium",
-                type: "estandar",
-                price: 220,
-                image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1032&q=80",
-                description: "Habitación premium con acabados de lujo y vistas panorámicas.",
-                features: ["35 m²", "Vista Panorámica", "Minibar"],
-                amenities: ["wifi", "tv", "ac"],
-                badge: "Premium",
-                popularity: 4.8
-            }
-        ];
-
-        // Datos de las recomendaciones
-        const recommendations = [
-            {
-                id: 1,
-                name: "Cena Gourmet",
-                type: "food",
-                price: 75,
-                image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2065&q=80",
-                description: "Experiencia culinaria exclusiva en nuestro restaurante principal."
-            },
-            {
-                id: 2,
-                name: "Masaje Relajante",
-                type: "service",
-                price: 90,
-                image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                description: "Disfruta de un masaje rejuvenecedor en nuestro spa de lujo."
-            },
-            {
-                id: 3,
-                name: "Tour por la Ciudad",
-                type: "activity",
-                price: 45,
-                image: "https://images.unsplash.com/photo-1470337458703-46ad1756a187?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
-                description: "Descubre los principales atractivos de Lima con nuestro guía experto."
-            },
-            {
-                id: 4,
-                name: "Cocteles Premium",
-                type: "drink",
-                price: 15,
-                image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2157&q=80",
-                description: "Disfruta de nuestros exclusivos cocteles en el bar del hotel."
-            },
-            {
-                id: 5,
-                name: "Desayuno Buffet",
-                type: "food",
-                price: 25,
-                image: "https://images.unsplash.com/photo-1551218808-94e220e084d2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                description: "Amplio buffet con opciones internacionales y locales."
-            },
-            {
-                id: 6,
-                name: "Tratamiento Facial",
-                type: "service",
-                price: 70,
-                image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                description: "Rejuvenece tu piel con nuestro tratamiento facial premium."
-            }
-        ];
-
-        // Estado de la aplicación
-        let filteredRooms = [...rooms];
-        let filteredRecommendations = [...recommendations];
-        let selectedServices = [];
-
-        // Inicialización
-        document.addEventListener('DOMContentLoaded', function() {
-            // Renderizar habitaciones y recomendaciones
-            renderRooms(filteredRooms);
-            renderRecommendations(filteredRecommendations);
-            
-            // Configurar eventos
-            setupEventListeners();
-            
-            // Establecer fechas por defecto
-            setDefaultDates();
-        });
-
-        // Configurar event listeners
-        function setupEventListeners() {
-            // Toggle menu for mobile
-            document.querySelector('.menu-toggle').addEventListener('click', function() {
-                document.querySelector('.nav-links').classList.toggle('active');
-            });
-
-            // Toggle user menu
-            const userMenuToggle = document.getElementById('user-menu-toggle');
-            const userMenu = document.getElementById('user-menu');
-            
-            userMenuToggle.addEventListener('click', function(e) {
-                e.stopPropagation();
-                userMenu.classList.toggle('active');
-            });
-
-            // Close user menu when clicking outside
-            document.addEventListener('click', function() {
-                userMenu.classList.remove('active');
-            });
-
-            // Prevent user menu from closing when clicking inside
-            userMenu.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
-
-            // Tabs functionality
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Remove active class from all tabs
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    // Add active class to clicked tab
-                    this.classList.add('active');
-                    
-                    // Hide all tab contents
-                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                    // Show corresponding tab content
-                    const tabId = this.getAttribute('data-tab');
-                    document.getElementById(`${tabId}-tab`).classList.add('active');
-                });
-            });
-
-            // Search functionality
-            document.getElementById('search-btn').addEventListener('click', applyFilters);
-            document.getElementById('search').addEventListener('input', applyFilters);
-            
-            // Filter functionality
-            document.querySelectorAll('input[name="room-type"], input[name="price-range"], input[name="amenities"]').forEach(input => {
-                input.addEventListener('change', applyFilters);
-            });
-            
-            // Sort functionality
-            document.getElementById('sort-rooms').addEventListener('change', applyFilters);
-            
-            // Clear filters
-            document.getElementById('clear-filters').addEventListener('click', clearFilters);
-            
-            // perfil
-            document.getElementById('perfil-btn').addEventListener('click', function() {
-                window.location.href = 'perfil.html';
-            });
-            // Filter recommendations
-            document.getElementById('history-btn').addEventListener('click', function() {
-                window.location.href = 'historial.html';
-            });
-
-    
-            // Handle logout - REDIRIGE A INDEX.HTML
-            document.getElementById('logout-btn').addEventListener('click', function() {
-                if(confirm('¿Está seguro de que desea cerrar sesión?')) {
-                    window.location.href = 'index.html';
-                }
-            });
-        }
-
-        // Establecer fechas por defecto
-        function setDefaultDates() {
-            const today = new Date();
-            const tomorrow = new Date(today);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            
-            document.getElementById('checkin').valueAsDate = today;
-            document.getElementById('checkout').valueAsDate = tomorrow;
-        }
-
-        // Aplicar filtros y búsqueda
-        function applyFilters() {
-            const searchTerm = document.getElementById('search').value.toLowerCase();
-            const selectedRoomTypes = Array.from(document.querySelectorAll('input[name="room-type"]:checked')).map(cb => cb.value);
-            const selectedPriceRanges = Array.from(document.querySelectorAll('input[name="price-range"]:checked')).map(cb => cb.value);
-            const selectedAmenities = Array.from(document.querySelectorAll('input[name="amenities"]:checked')).map(cb => cb.value);
-            const sortBy = document.getElementById('sort-rooms').value;
-            
-            // Filtrar habitaciones
-            filteredRooms = rooms.filter(room => {
-                // Filtrar por término de búsqueda
-                if (searchTerm && !room.name.toLowerCase().includes(searchTerm) && 
-                    !room.description.toLowerCase().includes(searchTerm)) {
-                    return false;
-                }
-                
-                // Filtrar por tipo de habitación
-                if (selectedRoomTypes.length > 0 && !selectedRoomTypes.includes(room.type)) {
-                    return false;
-                }
-                
-                // Filtrar por rango de precio
-                if (selectedPriceRanges.length > 0) {
-                    let inPriceRange = false;
-                    
-                    selectedPriceRanges.forEach(range => {
-                        if (range === '100-200' && room.price >= 100 && room.price <= 200) inPriceRange = true;
-                        if (range === '200-300' && room.price >= 200 && room.price <= 300) inPriceRange = true;
-                        if (range === '300-500' && room.price >= 300 && room.price <= 500) inPriceRange = true;
-                        if (range === '500+' && room.price > 500) inPriceRange = true;
-                    });
-                    
-                    if (!inPriceRange) return false;
-                }
-                
-                // Filtrar por comodidades
-                if (selectedAmenities.length > 0) {
-                    const hasAllAmenities = selectedAmenities.every(amenity => 
-                        room.amenities.includes(amenity)
-                    );
-                    
-                    if (!hasAllAmenities) return false;
-                }
-                
-                return true;
-            });
-            
-            // Ordenar habitaciones
-            sortRooms(filteredRooms, sortBy);
-            
-            // Renderizar habitaciones filtradas
-            renderRooms(filteredRooms);
-        }
-
-        // Ordenar habitaciones
-        function sortRooms(roomsToSort, sortBy) {
-            switch(sortBy) {
-                case 'price-asc':
-                    roomsToSort.sort((a, b) => a.price - b.price);
-                    break;
-                case 'price-desc':
-                    roomsToSort.sort((a, b) => b.price - a.price);
-                    break;
-                case 'name':
-                    roomsToSort.sort((a, b) => a.name.localeCompare(b.name));
-                    break;
-                case 'popularity':
-                    roomsToSort.sort((a, b) => b.popularity - a.popularity);
-                    break;
-            }
-        }
-
-        // Limpiar filtros - SOLO LOS FILTROS DE HABITACIONES
-        function clearFilters() {
-            document.getElementById('search').value = '';
-            
-            // Solo marcar como checked los checkboxes de filtros de habitaciones
-            document.querySelectorAll('#rooms-tab input[type="checkbox"]').forEach(cb => {
-                cb.checked = true;
-            });
-            
-            document.getElementById('sort-rooms').value = 'price-asc';
-            
-            applyFilters();
-        }
-
-        // Filtrar recomendaciones
-        function filterRecommendations() {
-            const filterType = document.getElementById('filter-recommendations').value;
-            
-            if (filterType === 'all') {
-                filteredRecommendations = [...recommendations];
-            } else {
-                filteredRecommendations = recommendations.filter(rec => rec.type === filterType);
-            }
-            
-            renderRecommendations(filteredRecommendations);
-        }
-
-        // Renderizar habitaciones
-        function renderRooms(roomsToRender) {
-            const container = document.getElementById('rooms-container');
-            
-            if (roomsToRender.length === 0) {
-                container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--gray);">No se encontraron habitaciones que coincidan con los criterios de búsqueda.</p>';
-                return;
-            }
-            
-            container.innerHTML = roomsToRender.map(room => `
-                <div class="room-card">
-                    <div class="room-image">
-                        <img src="${room.image}" alt="${room.name}">
-                        ${room.badge ? `<div class="room-badge">${room.badge}</div>` : ''}
-                    </div>
-                    <div class="room-info">
-                        <h3>${room.name}</h3>
-                        <p>${room.description}</p>
-                        <div class="room-features">
-                            ${room.features.map(feature => `<span>${feature}</span>`).join('')}
-                        </div>
-                        <div class="room-price">S/${room.price} / noche</div>
-                        <div class="room-actions">
-                            <button class="btn" onclick="reserveRoom(${room.id})">Reservar</button>
-                            <button class="btn-outline btn">Ver Detalles</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Renderizar recomendaciones
-        function renderRecommendations(recommendationsToRender) {
-            const container = document.getElementById('recommendations-container');
-            
-            if (recommendationsToRender.length === 0) {
-                container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--gray);">No se encontraron recomendaciones que coincidan con el filtro seleccionado.</p>';
-                return;
-            }
-            
-            container.innerHTML = recommendationsToRender.map(rec => `
-                <div class="recommendation-card">
-                    <div class="recommendation-image">
-                        <img src="${rec.image}" alt="${rec.name}">
-                    </div>
-                    <div class="recommendation-info">
-                        <span class="recommendation-type">${getTypeLabel(rec.type)}</span>
-                        <h4>${rec.name}</h4>
-                        <p>${rec.description}</p>
-                        <div class="recommendation-price">S/${rec.price} ${getPriceUnit(rec.type)}</div>
-                        <button class="btn-success btn" style="width: 100%;" onclick="addService(${rec.id})">Agregar</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Obtener etiqueta para el tipo de recomendación
-        function getTypeLabel(type) {
-            const labels = {
-                'food': 'Comida',
-                'service': 'Servicio',
-                'activity': 'Actividad',
-                'drink': 'Bebida'
-            };
-            return labels[type] || 'Otro';
-        }
-
-        // Obtener unidad de precio para el tipo de recomendación
-        function getPriceUnit(type) {
-            const units = {
-                'food': 'por persona',
-                'service': 'por sesión',
-                'activity': 'por persona',
-                'drink': 'por bebida'
-            };
-            return units[type] || '';
-        }
-
-        // Reservar habitación
-        function reserveRoom(roomId) {
-            const room = rooms.find(r => r.id === roomId);
-            if (room) {
-                alert(`Has seleccionado la ${room.name} por S/${room.price} por noche. Serás redirigido a la página de confirmación de reserva.`);
-                window.location.href = "reservas.html";
-            }
-        }
-
-        // Agregar servicio a la reserva
-        function addService(serviceId) {
-            const service = recommendations.find(r => r.id === serviceId);
-            if (service) {
-                selectedServices.push(service);
-                
-                // Mostrar notificación
-                const notification = document.getElementById('cart-notification');
-                const notificationText = document.getElementById('notification-text');
-                notificationText.textContent = `${service.name} agregado correctamente`;
-                notification.classList.add('active');
-                
-                // Ocultar notificación después de 3 segundos
-                setTimeout(() => {
-                    notification.classList.remove('active');
-                }, 3000);
-                
-                console.log('Servicios seleccionados:', selectedServices);
-            }
-        }
-    </script>
+    <!-- Scripts de Firebase -->
+    <script type="module" src="js/firebase/config.js"></script>
+    <script type="module" src="js/firebase/services/tipoHabitacionService.js"></script>
+    <script type="module" src="js/firebase/services/unidadHabitacionService.js"></script>
+    <script type="module" src="js/firebase/services/servicioService.js"></script>
+    <script type="module" src="js/firebase/services/categoriaService.js"></script>
+    <script type="module" src="js/huesped/homeHuesped.js"></script>
 </body>
 </html>

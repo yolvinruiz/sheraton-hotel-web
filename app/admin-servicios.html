@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administrar Servicios - Sheraton</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    .admin-section { padding: 40px 0; }
+    .admin-header { text-align: center; margin-bottom: 30px; }
+    .admin-actions { text-align: center; margin: 20px 0; }
+    .search-box { text-align: center; margin: 20px 0; }
+    .search-box input {
+      padding: 10px;
+      width: 100%;
+      max-width: 500px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .filtros-categorias {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .filtro-categoria {
+      padding: 8px 16px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .filtro-categoria.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 25px;
+      margin-top: 20px;
+    }
+    .service-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid #f0f0f0;
+    }
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .service-card.destacado {
+      border-left: 4px solid #ffd700;
+      background: linear-gradient(135deg, #fff, #f8f9fa);
+    }
+    .service-image {
+      height: 200px;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+    .service-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .service-card h4 {
+      color: var(--primary);
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+    .service-categoria {
+      display: inline-block;
+      background: #e9ecef;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      margin-bottom: 10px;
+    }
+    .service-precio {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #28a745;
+      margin: 10px 0;
+    }
+    .service-descripcion {
+      color: #666;
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+    .service-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: #888;
+      margin-bottom: 15px;
+    }
+    .card-actions {
+      margin-top: 15px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+    .badge-destacado {
+      background: #ffd700;
+      color: #000;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+    .estado-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    .estado-activo {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .estado-inactivo {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <nav class="navbar">
+        <div class="logo">
+          <img src="https://cache.marriott.com/content/dam/marriott-digital/si/global-property-shared/en_us/logo/assets/si_logo_L.png" alt="Sheraton Logo">
+        </div>
+        <ul class="nav-links">
+          <li><a href="/admin-habitaciones.html">Habitaciones</a></li>
+          <li><a href="/admin-servicios.html" class="active">Servicios</a></li>
+        </ul>
+        <div class="nav-buttons">
+          <a href="#" class="btn" id="logout-btn">Cerrar Sesión</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Sección de Administración de Servicios -->
+  <section class="section admin-section">
+    <div class="container">
+      <div class="admin-header">
+        <h2>Administrar Servicios Adicionales</h2>
+        <p>Gestiona los servicios complementarios para los huéspedes</p>
+      </div>
+
+      <div class="admin-actions">
+        <button id="btn-agregar-categoria" class="btn btn-secondary">
+          <i class="fas fa-folder-plus"></i> Agregar Categoría
+        </button>
+        <button id="btn-agregar-servicio" class="btn" style="margin-left: 10px;">
+          <i class="fas fa-plus"></i> Agregar Servicio
+        </button>
+      </div>
+
+      <div class="search-box">
+        <input type="text" id="busqueda-servicios" placeholder="Buscar servicios por nombre o descripción...">
+      </div>
+
+      <div class="filtros-categorias" id="filtros-categorias">
+        <div class="filtro-categoria active" data-categoria="todas">Todos los Servicios</div>
+        <!-- Las categorías se cargarán dinámicamente -->
+      </div>
+
+      <div id="resultados-container">
+        <p>Cargando servicios...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal: Agregar/Editar Categoría -->
+  <div class="modal" id="modal-categoria">
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2 id="titulo-modal-categoria">Agregar Categoría</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-categoria">
+          <input type="hidden" id="categoria-id">
+          <div class="form-group">
+            <label>Nombre de la Categoría</label>
+            <input type="text" class="form-control" id="categoria-nombre" required>
+          </div>
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea class="form-control" id="categoria-descripcion" rows="3"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Orden de visualización</label>
+            <input type="number" class="form-control" id="categoria-orden" min="1" value="1" required>
+          </div>
+          <div class="form-group">
+            <label>Estado</label>
+            <select class="form-control" id="categoria-estado" required>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
+          <button type="submit" class="btn" style="width: 100%;">Guardar Categoría</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Agregar/Editar Servicio -->
+  <div class="modal" id="modal-servicio">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 id="titulo-modal-servicio">Agregar Servicio</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-servicio">
+          <input type="hidden" id="servicio-id">
+          <div class="form-group">
+            <label>Nombre del Servicio</label>
+            <input type="text" class="form-control" id="servicio-nombre" required>
+          </div>
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea class="form-control" id="servicio-descripcion" rows="3" required></textarea>
+          </div>
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+              <label>Precio (S/)</label>
+              <input type="number" class="form-control" id="servicio-precio" min="0" step="0.01" required>
+            </div>
+            <div class="form-group">
+              <label>Categoría</label>
+              <select class="form-control" id="servicio-categoriaId" required>
+                <option value="">Seleccione categoría</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+              <label>Duración (opcional)</label>
+              <input type="text" class="form-control" id="servicio-duracion" placeholder="Ej: 2 horas">
+            </div>
+            <div class="form-group">
+              <label>Horario (opcional)</label>
+              <input type="text" class="form-control" id="servicio-horario" placeholder="Ej: 06:00 - 11:00">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>URL de imagen</label>
+            <input type="url" class="form-control" id="servicio-imagen">
+            <small>Recomendado: 400x300px</small>
+          </div>
+          <div class="form-group">
+            <img id="preview-imagen-servicio" src="" alt="Vista previa" style="max-width: 100%; margin-top: 10px; display: none; border-radius: 8px;">
+          </div>
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+              <label>Estado</label>
+              <select class="form-control" id="servicio-estado" required>
+                <option value="activo">Activo</option>
+                <option value="inactivo">Inactivo</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Destacado</label>
+              <select class="form-control" id="servicio-destacado" required>
+                <option value="false">Normal</option>
+                <option value="true">Destacado</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn" style="width: 100%;">Guardar Servicio</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Script básico para modales
+    document.getElementById('btn-agregar-categoria')?.addEventListener('click', () => {
+      document.getElementById('modal-categoria').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    });
+
+    document.getElementById('btn-agregar-servicio')?.addEventListener('click', () => {
+      document.getElementById('modal-servicio').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    });
+
+    document.querySelectorAll('.close-modal').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+        document.body.style.overflow = 'auto';
+      });
+    });
+
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+          document.body.style.overflow = 'auto';
+        }
+      });
+    });
+
+    // Preview de imagen
+    document.getElementById('servicio-imagen')?.addEventListener('input', (e) => {
+      const preview = document.getElementById('preview-imagen-servicio');
+      if (e.target.value) {
+        preview.src = e.target.value;
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+      }
+    });
+  </script>
+
+  <script type="module" src="js/firebase/config.js"></script>
+  <script type="module" src="js/firebase/services/categoriaService.js"></script>
+  <script type="module" src="js/firebase/services/servicioService.js"></script>
+  <script type="module" src="js/admin/adminServicios.js"></script>
+</body>
+</html>

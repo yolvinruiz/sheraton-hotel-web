@@ -1,0 +1,21 @@
+import { db } from '../config.js';
+import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where } from 'firebase/firestore';
+
+const COL = 'unidadesHabitacion';
+
+export const UnidadHabitacionService = {
+  async listarPorTipo(tipoId) {
+    const q = query(collection(db, COL), where('tipoId', '==', tipoId));
+    const snap = await getDocs(q);
+    return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  },
+  async crear(data) {
+    return await addDoc(collection(db, COL), data);
+  },
+  async actualizar(id, data) {
+    await updateDoc(doc(db, COL, id), data);
+  },
+  async eliminar(id) {
+    await deleteDoc(doc(db, COL, id));
+  }
+};

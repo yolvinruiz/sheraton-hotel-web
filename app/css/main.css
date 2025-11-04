@@ -586,5 +586,82 @@ footer {
         width: 100%;
         max-width: 250px;
     }
-    
+    .estado-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.estado-badge.disponible {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.estado-badge.mantenimiento {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.error {
+  color: #dc3545;
+  text-align: center;
+  padding: 20px;
+}
+    .service-card {
+  transition: all 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-2px);
+}
+
+.badge-destacado {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.filtros-categorias {
+  scrollbar-width: thin;
+}
+
+.filtros-categorias::-webkit-scrollbar {
+  height: 6px;
+}
+
+.filtros-categorias::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.filtros-categorias::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+.filtros-categorias::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .filtros-categorias {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr !important;
+  }
+}
 }
