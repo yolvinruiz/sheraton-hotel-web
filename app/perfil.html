@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Perfil - Sheraton</title>
     <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .profile-section { padding: 40px 0; }
         .profile-header { text-align: center; margin-bottom: 30px; }
@@ -13,7 +14,7 @@
             border-radius: 8px;
             padding: 30px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
         }
         .profile-avatar {
@@ -37,8 +38,82 @@
             gap: 15px;
         }
         .info-item { margin-bottom: 10px; }
+        .info-item.full-width { grid-column: 1 / -1; }
         .info-label { font-weight: 600; color: var(--gray); }
         .info-value { color: var(--dark); }
+        
+        /* Estilos para el formulario de edición */
+        .edit-preferences-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .preferences-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .preference-checkbox {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .preference-checkbox:hover {
+            background: #f8f9fa;
+            border-color: var(--primary);
+        }
+        .preference-checkbox input {
+            margin-right: 10px;
+        }
+        .preference-icon {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+        
+        /* Botones */
+        .profile-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .btn-secondary {
+            background: var(--secondary);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        /* Animaciones */
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -48,11 +123,6 @@
                 <div class="logo">
                     <img src="https://cache.marriott.com/content/dam/marriott-digital/si/global-property-shared/en_us/logo/assets/si_logo_L.png" alt="Sheraton Logo">
                 </div>
-                <ul class="nav-links">
-                    <li><a href="/huesped/huesped.html">Inicio</a></li>
-                    <li><a href="/huesped/perfil.html" class="active">Mi Perfil</a></li>
-                    <li><a href="/huesped/historial.html">Historial</a></li>
-                </ul>
                 <div class="nav-buttons">
                     <a href="#" class="btn" id="logout-btn">Cerrar Sesión</a>
                 </div>
@@ -64,7 +134,7 @@
         <div class="container">
             <div class="profile-header">
                 <h2>Mi Perfil</h2>
-                <p>Gestiona tu información personal</p>
+                <p>Gestiona tu información personal y preferencias</p>
             </div>
 
             <div class="profile-card">
@@ -100,9 +170,20 @@
                     </div>
                 </div>
 
+                <!-- Contenedor para preferencias -->
+                <div id="preferences-container">
+                    <!-- Las preferencias se cargarán dinámicamente aquí -->
+                </div>
+
                 <div class="profile-actions">
                     <button class="btn btn-secondary" id="edit-profile-btn">
-                        <i class="fas fa-edit"></i> Editar Perfil
+                        <i class="fas fa-edit"></i> Editar Preferencias
+                    </button>
+                    <button class="btn" id="save-profile-btn" style="display: none;">
+                        <i class="fas fa-save"></i> Guardar Cambios
+                    </button>
+                    <button class="btn btn-outline" id="cancel-edit-btn" style="display: none;">
+                        <i class="fas fa-times"></i> Cancelar
                     </button>
                 </div>
             </div>

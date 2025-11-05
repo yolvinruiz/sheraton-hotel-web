@@ -1,37 +1,67 @@
 // js/firebase/services/authService.js
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { app } from '../config.js';
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword,
+  signOut,
+  GoogleAuthProvider,
+  signInWithPopup
+} from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js';
+import { auth } from '../config.js';
 
-const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
 
-export const AuthService = {
-  async registrar(email, password) {
-    return await createUserWithEmailAndPassword(auth, email, password);
-  },
+export class AuthService {
+  static async registrar(email, password) {
+    try {
+      console.log("🔐 Intentando registrar:", email);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      console.log("✅ Registro exitoso:", userCredential.user.uid);
+      return userCredential;
+    } catch (error) {
+      console.error("❌ Error en registro:", error);
+      throw error;
+    }
+  }
 
-  async login(email, password) {
-    return await signInWithEmailAndPassword(auth, email, password);
-  },
+  static async login(email, password) {
+    try {
+      console.log("🔐 Intentando login:", email);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log("✅ Login exitoso:", userCredential.user.uid);
+      return userCredential;
+    } catch (error) {
+      console.error("❌ Error en login:", error);
+      throw error;
+    }
+  }
 
-  async loginConGoogle() {
-    
-    const provider = new GoogleAuthProvider();
-    // Agregar scopes adicionales si es necesario
-    provider.addScope('email');
-    provider.addScope('profile');
-    return await signInWithPopup(auth, provider);
-  },
+  static async logout() {
+    try {
+      await signOut(auth);
+      console.log("✅ Logout exitoso");
+    } catch (error) {
+      console.error("❌ Error en logout:", error);
+      throw error;
+    }
+  }
 
-  async logout() {
-    return await signOut(auth);
-  },
+  static async loginConGoogle() {
+    try {
+      console.log("🔐 Intentando login con Google");
+      const result = await signInWithPopup(auth, googleProvider);
+      console.log("✅ Login con Google exitoso:", result.user.uid);
+      return result;
+    } catch (error) {
+      console.error("❌ Error con Google login:", error);
+      throw error;
+    }
+  }
 
-  getUsuarioActual() {
+  static getCurrentUser() {
     return auth.currentUser;
-  },
+  }
 
-  // Nuevo método para observar cambios de estado
-  onAuthStateChanged(callback) {
+  static onAuthStateChanged(callback) {
     return auth.onAuthStateChanged(callback);
   }
-};
+}

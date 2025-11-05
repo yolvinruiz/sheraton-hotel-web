@@ -664,4 +664,398 @@ footer {
     grid-template-columns: 1fr !important;
   }
 }
+/* Estilos para el formulario de registro con preferencias */
+.form-section {
+    margin-bottom: 25px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 4px solid var(--primary);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.preferences-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.preference-checkbox {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    min-height: 60px;
+}
+
+.preference-checkbox:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 71, 146, 0.15);
+}
+
+.preference-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.preference-checkbox input[type="checkbox"]:checked + .checkmark {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.preference-checkbox input[type="checkbox"]:checked + .checkmark:after {
+    display: block;
+}
+
+.preference-checkbox input[type="checkbox"]:checked ~ span:last-child {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.checkmark {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 22px;
+    width: 22px;
+    background-color: #fff;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.checkmark:after {
+    content: "✓";
+    position: absolute;
+    display: none;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.preference-checkbox i {
+    margin-right: 12px;
+    color: var(--primary);
+    font-size: 1.2em;
+    width: 24px;
+    text-align: center;
+}
+
+.preference-checkbox span:last-child {
+    flex: 1;
+    font-weight: 500;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.form-section h4 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--primary);
+    margin-bottom: 20px;
+    font-size: 1.1em;
+}
+
+.form-section h4 i {
+    color: var(--primary);
+    width: 20px;
+}
+
+/* Mejoras responsive */
+@media (max-width: 768px) {
+    .preferences-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .preference-checkbox {
+        padding: 12px;
+    }
+}
+  .form-section {
+        margin-bottom: 25px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid var(--primary);
+    }
+
+    .preferences-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .preference-checkbox {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .preference-checkbox:hover {
+        border-color: var(--primary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 71, 146, 0.1);
+    }
+
+    .preference-checkbox input[type="checkbox"] {
+        display: none;
+    }
+
+    .preference-checkbox input[type="checkbox"]:checked + .checkmark {
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .preference-checkbox input[type="checkbox"]:checked + .checkmark:after {
+        display: block;
+    }
+
+    .checkmark {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 20px;
+        width: 20px;
+        background-color: #fff;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+    .checkmark:after {
+        content: "✓";
+        position: absolute;
+        display: none;
+        color: white;
+        font-weight: bold;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .preference-checkbox i {
+        margin-right: 10px;
+        color: var(--primary);
+        font-size: 1.1em;
+        width: 20px;
+        text-align: center;
+    }
+
+    .preference-checkbox span:last-child {
+        flex: 1;
+        font-weight: 500;
+    }
+
+    .form-section h4 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-section h4 i {
+        color: var(--primary);
+    }
+    /* Estilos mejorados para el home del huésped */
+.service-details {
+    display: flex;
+    gap: 15px;
+    margin: 10px 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.service-details span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.room-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+.room-features span {
+    background: var(--light);
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.room-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.room-actions .btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.recommendation-card .btn-sm {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    cursor: pointer;
+}
+
+.filter-checkbox input[type="checkbox"] {
+    margin: 0;
+}
+
+.search-form {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.search-form .form-group:last-child {
+    display: flex;
+    align-items: flex-end;
+}
+
+/* Mejoras responsive */
+@media (max-width: 768px) {
+    .room-actions {
+        flex-direction: column;
+    }
+    
+    .search-form {
+        padding: 15px;
+    }
+    
+    .room-features {
+        gap: 5px;
+    }
+    
+    .room-features span {
+        font-size: 0.7rem;
+        padding: 6px 10px;
+    }
+}
+
+/* Estados de carga */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Badges mejorados */
+.room-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--primary);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    z-index: 2;
+}
+
+.recommendation-image .room-badge {
+    top: 5px;
+    right: 5px;
+}
+/* Estilos para recomendaciones */
+.room-card.recomendada {
+    border: 2px solid #28a745;
+    position: relative;
+}
+
+.recommendation-card.recomendada {
+    border: 2px solid #28a745;
+    position: relative;
+}
+
+.room-badge.recomendada {
+    background: #28a745;
+    color: white;
+}
+
+.room-badge.destacado {
+    background: #ffd700;
+    color: #000;
+    font-weight: bold;
+}
+
+/* Mejoras visuales para las tarjetas */
+.room-card, .recommendation-card {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.room-card:hover, .recommendation-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* Estilos para el selector de ordenamiento */
+#sort-rooms {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    font-size: 0.9rem;
+}
+
+/* Mejoras para los filtros */
+.filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.filter-checkbox:hover {
+    color: var(--primary);
+}
+
+.filter-checkbox input[type="checkbox"] {
+    margin: 0;
+    transform: scale(1.1);
+}
+
 }

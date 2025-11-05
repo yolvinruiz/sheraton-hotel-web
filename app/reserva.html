@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Proceso de Reserva - Sheraton</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        :root { --primary:#004792; --secondary:#b38b59; --danger:#dc3545; }
+        .reserva-section { padding: 40px 0; }
+        .reserva-container { display:grid; grid-template-columns:1fr 1fr; gap:40px; max-width:1200px; margin:0 auto; }
+        .resumen-reserva, .formulario-pago { background:white; padding:30px; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,.1); }
+        .habitacion-info { display:flex; gap:20px; margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:20px; }
+        .habitacion-imagen { width:150px; height:100px; border-radius:8px; overflow:hidden; }
+        .habitacion-imagen img{ width:100%; height:100%; object-fit:cover; }
+        .servicios-agregados { margin:20px 0; }
+        .servicio-item { display:flex; justify-content:space-between; align-items:center; padding:10px; background:#f8f9fa; border-radius:4px; margin-bottom:8px; }
+        .resumen-total { border-top:2px solid var(--primary); padding-top:15px; margin-top:15px; }
+        .total-item { display:flex; justify-content:space-between; margin-bottom:8px; }
+        .total-final { font-size:1.2rem; font-weight:bold; color:var(--primary); }
+        .form-group label{ display:block; margin-bottom:8px; font-weight:600; }
+        .form-control { width:100%; padding:12px; border:1px solid #ddd; border-radius:4px; font-size:1rem; }
+        .btn{ display:inline-block; padding:10px 14px; border-radius:6px; border:none; background:var(--primary); color:white; cursor:pointer; }
+        .btn-outline{ background:transparent; border:1px solid var(--primary); color:var(--primary); }
+        /* Calendar */
+        .calendar-wrap{ margin-top:20px; }
+        .calendar-controls{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px; }
+        .calendar{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; user-select:none; }
+        .day-name, .day{ text-align:center; padding:8px; border-radius:6px; }
+        .day-name{ font-size:.85rem; color:#666; }
+        .day{ cursor:pointer; background:#f8f9fa; transition:all .12s; }
+        .day:hover{ transform:translateY(-3px); box-shadow:0 4px 8px rgba(0,0,0,.06); }
+        .other-month{ opacity:.35; }
+        .past{ background:#eee; cursor:not-allowed; color:#999; }
+        .booked{ background:#fdecef; color:var(--danger); cursor:not-allowed; border:1px solid rgba(220,53,69,.12); }
+        .selected{ background:var(--primary); color:white; font-weight:700; }
+        .in-range{ background:rgba(0,71,146,.12); color:var(--primary); }
+        .calendar-legend{ display:flex; gap:12px; margin-top:10px; align-items:center; font-size:.9rem; }
+        .legend-swatch{ width:14px; height:14px; border-radius:3px; display:inline-block; }
+        .swatch-booked{ background:#fdecef; border:1px solid rgba(220,53,69,.12); }
+        .swatch-selected{ background:var(--primary); }
+        .swatch-range{ background:rgba(0,71,146,.12); }
+        /* unidades list */
+        .unidades-list{ display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+        .unidad-card{ border:1px solid #ddd; padding:8px 12px; border-radius:8px; cursor:pointer; display:flex; gap:8px; align-items:center; background:white; }
+        .unidad-card.selected{ border-color:var(--primary); box-shadow:0 4px 8px rgba(0,0,0,.06); background:rgba(0,71,146,.03); }
+        .small{ font-size:.9rem; color:#666; }
+        /* modal servicios */
+        .modal-servicios{ display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.45); z-index:1000; align-items:center; justify-content:center; }
+        .modal-content{ background:white; padding:24px; border-radius:8px; max-width:900px; width:92%; max-height:80vh; overflow:auto; }
+        .servicios-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin:12px 0; }
+        .servicio-card{ border:1px solid #ddd; border-radius:8px; padding:12px; cursor:pointer; transition:all .12s; display:flex; flex-direction:column; gap:8px; }
+        .servicio-card.selected{ border-color:var(--primary); background:rgba(0,71,146,.04);
+        }
+        .servicio-card.selected{
+    border-color:var(--primary);
+    background:rgba(0,71,146,.04);
+}
+
+.servicio-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px;
+    background:#f8f9fa;
+    border-radius:6px;
+    margin-bottom:8px;
+}
+.controls{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+.btn-cantidad{
+    width:32px;
+    height:32px;
+    border:none;
+    border-radius:6px;
+    background:#eee;
+    cursor:pointer;
+    font-weight:700;
+    font-size:18px;
+}
+.btn-eliminar{
+    background:#dc3545;
+    color:white;
+    border:none;
+    padding:6px 8px;
+    border-radius:6px;
+    cursor:pointer;
+}
+    </style>
+</head>
+<body>
+<header>...</header>
+
+<section class="section reserva-section">
+  <div class="container">
+    <h1 style="text-align:center;color:var(--primary);">Completar Reserva</h1>
+    <div class="reserva-container">
+      <div class="left-column">
+        <div class="resumen-reserva">
+          <h2>Resumen de tu Reserva</h2>
+          <div class="habitacion-info">
+            <div class="habitacion-imagen">
+              <img id="room-image" src="" alt="Habitación">
+            </div>
+            <div class="habitacion-detalles">
+              <h3 id="room-name"></h3>
+              <p id="room-description"></p>
+              <div class="room-price" id="room-price"></div>
+              <div class="fechas-reserva">
+                <p><strong>Check-in:</strong> <span id="checkin-date">—</span></p>
+                <p><strong>Check-out:</strong> <span id="checkout-date">—</span></p>
+                <p><strong>Noches:</strong> <span id="total-nights">0</span></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- NUEVO: selección de UNIDADES (habitaciones concretas) -->
+          <div>
+            <h4>Elige la habitación disponible</h4>
+            <div id="unidades-container" class="unidades-list">
+              <!-- tarjetas de unidad generadas por JS -->
+              <p class="small" id="unidades-loading">Cargando unidades...</p>
+            </div>
+          </div>
+
+          <!-- CALENDARIO (depende de unidad seleccionada) -->
+          <div class="calendar-wrap">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <h4 style="margin:0;">Selecciona tus fechas</h4>
+              <div class="small">Primero selecciona una habitación, luego selecciona check-in y check-out</div>
+            </div>
+
+            <div class="calendar-controls">
+              <div>
+                <button id="prev-month" class="btn-outline">«</button>
+                <button id="next-month" class="btn-outline">»</button>
+              </div>
+              <div id="month-title" class="small">Mes Año</div>
+              <div><button id="clear-selection" class="btn-outline">Limpiar</button></div>
+            </div>
+
+            <div id="calendar" class="calendar"></div>
+
+            <div class="calendar-legend">
+              <div class="legend-item"><span class="legend-swatch swatch-booked"></span> Días ocupados</div>
+              <div class="legend-item"><span class="legend-swatch swatch-selected"></span> Seleccionado</div>
+              <div class="legend-item"><span class="legend-swatch swatch-range"></span> Rango seleccionado</div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px;">
+            <button id="btn-open-services" class="btn btn-outline">Gestionar Servicios</button>
+          </div>
+
+          <div class="servicios-agregados" style="margin-top:18px;">
+            <h4>Servicios Adicionales</h4>
+            <div id="lista-servicios-modal"></div>
+            <div id="servicios-lista"><p class="small">No hay servicios agregados</p></div>
+          </div>
+
+          <div class="resumen-total" style="margin-top:18px;">
+            <div class="total-item">
+              <span>Habitación (<span id="nights-count">0</span> noches):</span>
+              <span id="subtotal-habitacion">S/ 0</span>
+            </div>
+            <div class="total-item">
+              <span>Servicios adicionales:</span>
+              <span id="subtotal-servicios">S/ 0</span>
+            </div>
+            <div class="total-item total-final">
+              <span>Total a pagar:</span>
+              <span id="total-pagar">S/ 0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna derecha: Formulario de pago -->
+      <div class="right-column">
+        <div class="formulario-pago">
+          <h2>Información de Pago</h2>
+          <div class="card-icons"><i class="fab fa-cc-visa"></i> <i class="fab fa-cc-mastercard"></i> <i class="fab fa-cc-amex"></i></div>
+
+          <div class="form-group"><label for="card-number">Número de Tarjeta</label>
+            <input type="text" id="card-number" class="form-control" placeholder="123456789012" maxlength="12" required>
+            <small style="color:#666;">Ingresa 12 dígitos para la simulación</small>
+          </div>
+
+          <div class="form-row" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="form-group"><label for="card-expiry">Fecha de Vencimiento</label><input type="text" id="card-expiry" class="form-control" placeholder="MM/AA" required></div>
+            <div class="form-group"><label for="card-cvv">CVV</label><input type="text" id="card-cvv" class="form-control" placeholder="123" maxlength="3" required></div>
+          </div>
+
+          <div class="form-group"><label for="card-name">Nombre en la Tarjeta</label><input type="text" id="card-name" class="form-control" required></div>
+          <div class="form-group"><label for="card-email">Email para confirmación</label><input type="email" id="card-email" class="form-control" required></div>
+
+          <button class="btn" id="btn-confirmar-pago" style="width:100%; margin-top:12px;"> <i class="fas fa-lock"></i> Confirmar y Pagar</button>
+          <div style="text-align:center; margin-top:12px; color:#666;"><small>___</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Modal servicios -->
+<div class="modal-servicios" id="modal-servicios">
+    <div class="modal-content">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <h2>Agregar Servicios</h2>
+            <button class="btn btn-outline" id="cerrar-modal"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div class="servicios-grid" id="servicios-disponibles"></div>
+
+        <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:12px;">
+            <button class="btn btn-outline" id="cancelar-servicios">Cancelar</button>
+            <button class="btn" id="confirmar-servicios">Agregar Selección</button>
+        </div>
+    </div>
+</div>
+
+<div class="notification" id="notification"><span id="notification-text"></span></div>
+
+<script type="module" src="js/firebase/config.js"></script>
+<script type="module" src="js/huesped/reserva.js"></script>
+</body>
+</html>

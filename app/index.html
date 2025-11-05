@@ -335,48 +335,53 @@
     </footer>
 
     <!-- Modal de Login/Registro -->
-    <div class="modal" id="login-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Iniciar Sesión / Registrarse</h2>
-                <button class="close-modal">&times;</button>
+<div class="modal" id="login-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Iniciar Sesión / Registrarse</h2>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="tabs">
+                <div class="tab active" data-tab="login">Iniciar Sesión</div>
+                <div class="tab" data-tab="register">Registrarse</div>
             </div>
-            <div class="modal-body">
-                <div class="tabs">
-                    <div class="tab active" data-tab="login">Iniciar Sesión</div>
-                    <div class="tab" data-tab="register">Registrarse</div>
-                </div>
 
-                <!-- Login Tab -->
-                <div class="tab-content active" id="login-tab">
-                    <form id="login-form">
-                        <div class="form-group">
-                            <label for="login-email">Correo Electrónico</label>
-                            <input type="email" id="login-email" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="login-password">Contraseña</label>
-                            <input type="password" id="login-password" class="form-control" required>
-                        </div>
-                        <button type="submit" class="btn" style="width: 100%;">Iniciar Sesión</button>
+            <!-- Login Tab -->
+            <div class="tab-content active" id="login-tab">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Correo Electrónico</label>
+                        <input type="email" id="login-email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Contraseña</label>
+                        <input type="password" id="login-password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%;">Iniciar Sesión</button>
 
-                        <!-- Botón de Google -->
-                        <div style="text-align: center; margin: 15px 0;">
-                            <p>O inicia sesión con:</p>
-                        </div>
-                        <button type="button" id="google-login-btn" class="btn" style="background: #DB4437; width: 100%;">
-                            <i class="fab fa-google"></i> Continuar con Google
-                        </button>
+                    <!-- Botón de Google -->
+                    <div style="text-align: center; margin: 15px 0;">
+                        <p>O inicia sesión con:</p>
+                    </div>
+                    <button type="button" id="google-login-btn" class="btn" style="background: #DB4437; width: 100%;">
+                        <i class="fab fa-google"></i> Continuar con Google
+                    </button>
 
-                        <div class="form-footer">
-                            <p>¿No tienes una cuenta? <a href="#" class="switch-tab" data-tab="register">Regístrate aquí</a></p>
-                        </div>
-                    </form>
-                </div>
+                    <div class="form-footer">
+                        <p>¿No tienes una cuenta? <a href="#" class="switch-tab" data-tab="register">Regístrate aquí</a></p>
+                    </div>
+                </form>
+            </div>
 
-                <!-- Register Tab -->
-                <div class="tab-content" id="register-tab">
-                    <form id="register-form">
+            <!-- Register Tab - MODIFICADO CON PREFERENCIAS -->
+            <div class="tab-content" id="register-tab">
+                <form id="register-form">
+                    <!-- Información Personal -->
+                    <div class="form-section">
+                        <h4 style="color: var(--primary); margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 8px;">
+                            <i class="fas fa-user"></i> Información Personal
+                        </h4>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="register-firstname">Nombre</label>
@@ -421,14 +426,150 @@
                                 <input type="number" id="register-age" class="form-control" min="18" required>
                             </div>
                         </div>
-                        <button type="submit" class="btn" style="width: 100%;">Registrarse</button>
-                        <div class="form-footer">
-                            <p>¿Ya tienes una cuenta? <a href="#" class="switch-tab" data-tab="login">Inicia sesión aquí</a></p>
+                    </div>
+
+                    <!-- Preferencias de Viaje -->
+                    <div class="form-section">
+                        <h4 style="color: var(--primary); margin: 20px 0 15px; border-bottom: 1px solid #eee; padding-bottom: 8px;">
+                            <i class="fas fa-suitcase"></i> Preferencias de Viaje
+                        </h4>
+                        <div class="form-group">
+                            <label for="register-travel-type">Tipo de Viaje *</label>
+                            <select id="register-travel-type" class="form-control" required>
+                                <option value="">Seleccione el propósito de su viaje</option>
+                                <option value="negocios">Negocios</option>
+                                <option value="vacaciones">Vacaciones</option>
+                                <option value="romantico">Viaje Romántico</option>
+                                <option value="familiar">Viaje Familiar</option>
+                                <option value="evento">Evento Especial</option>
+                            </select>
                         </div>
-                    </form>
-                </div>
+
+                        <div class="form-group">
+                            <label>Preferencias de Habitación *</label>
+                            <div class="preferences-grid">
+                                <label class="preference-checkbox">
+                                    <input type="checkbox" name="room-preference" value="vista-mar">
+                                    <span class="checkmark"></span>
+                                    <i class="fas fa-water"></i>
+                                    <span>Vista al Mar</span>
+                                </label>
+                                <label class="preference-checkbox">
+                                    <input type="checkbox" name="room-preference" value="vista-ciudad">
+                                    <span class="checkmark"></span>
+                                    <i class="fas fa-city"></i>
+                                    <span>Vista a la Ciudad</span>
+                                </label>
+                                <label class="preference-checkbox">
+                                    <input type="checkbox" name="room-preference" value="piso-alto">
+                                    <span class="checkmark"></span>
+                                    <i class="fas fa-building"></i>
+                                    <span>Piso Alto</span>
+                                </label>
+                                <label class="preference-checkbox">
+                                    <input type="checkbox" name="room-preference" value="silenciosa">
+                                    <span class="checkmark"></span>
+                                    <i class="fas fa-volume-mute"></i>
+                                    <span>Zona Silenciosa</span>
+                                </label>
+                                <label class="preference-checkbox">
+                                    <input type="checkbox" name="room-preference" value="suite-lujo">
+                                    <span class="checkmark"></span>
+                                    <i class="fas fa-crown"></i>
+                                    <span>Suite de Lujo</span>
+                                </label>
+                                <label class="preference-checkbox">
+                                    <input type="checkbox" name="room-preference" value="accesible">
+                                    <span class="checkmark"></span>
+                                    <i class="fas fa-wheelchair"></i>
+                                    <span>Accesible</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Servicios que más utiliza *</label>
+                            <div class="preferences-grid">
+                                <label class="preference-checkbox">
+                                    <input type="checkbox" name="service-preference" value="spa">
+                                    <span class="checkmark"></span>
+                                    <i class="fas fa-spa"></i>
+                                    <span>Spa & Bienestar</span>
+                                </label>
+                                <label class="preference-checkbox">
+                                    <input type="checkbox" name="service-preference" value="gimnasio">
+                                    <span class="checkmark"></span>
+                                    <i class="fas fa-dumbbell"></i>
+                                    <span>Gimnasio</span>
+                                </label>
+                                <label class="preference-checkbox">
+                                    <input type="checkbox" name="service-preference" value="restaurante">
+                                    <span class="checkmark"></span>
+                                    <i class="fas fa-utensils"></i>
+                                    <span>Restaurante</span>
+                                </label>
+                                <label class="preference-checkbox">
+                                    <input type="checkbox" name="service-preference" value="piscina">
+                                    <span class="checkmark"></span>
+                                    <i class="fas fa-swimming-pool"></i>
+                                    <span>Piscina</span>
+                                </label>
+                                <label class="preference-checkbox">
+                                    <input type="checkbox" name="service-preference" value="bar">
+                                    <span class="checkmark"></span>
+                                    <i class="fas fa-cocktail"></i>
+                                    <span>Bar</span>
+                                </label>
+                                <label class="preference-checkbox">
+                                    <input type="checkbox" name="service-preference" value="room-service">
+                                    <span class="checkmark"></span>
+                                    <i class="fas fa-concierge-bell"></i>
+                                    <span>Room Service</span>
+                                </label>
+                                <label class="preference-checkbox">
+                                    <input type="checkbox" name="service-preference" value="business">
+                                    <span class="checkmark"></span>
+                                    <i class="fas fa-briefcase"></i>
+                                    <span>Business Center</span>
+                                </label>
+                                <label class="preference-checkbox">
+                                    <input type="checkbox" name="service-preference" value="eventos">
+                                    <span class="checkmark"></span>
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>Salón de Eventos</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="register-comfort">Nivel de Comodidad Preferido *</label>
+                            <select id="register-comfort" class="form-control" required>
+                                <option value="">Seleccione su preferencia</option>
+                                <option value="economico">Económico</option>
+                                <option value="estandar">Estándar</option>
+                                <option value="superior">Superior</option>
+                                <option value="lujo">Lujo</option>
+                                <option value="premium">Premium</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="register-special-requests">Solicitudes Especiales</label>
+                            <textarea id="register-special-requests" class="form-control" rows="3" placeholder="Alergias, necesidades especiales, celebraciones..."></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn" style="width: 100%; margin-top: 20px;">
+                        <i class="fas fa-user-plus"></i> Completar Registro
+                    </button>
+                    <div class="form-footer">
+                        <p>¿Ya tienes una cuenta? <a href="#" class="switch-tab" data-tab="login">Inicia sesión aquí</a></p>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
+</div>
     </div>
     <!-- Scripts -->
     <script>
@@ -515,9 +656,11 @@
             });
         });
     </script>
-    <script type="module" src="js/firebase/config.js"></script>
-    <script type="module" src="js/login.js"></script>
-    <script type="module" src="js/registro.js"></script>
+<script type="module" src="js/firebase/config.js"></script>
+<script type="module" src="js/firebase/services/authService.js"></script>
+<script type="module" src="js/firebase/services/huespedService.js"></script>
+<script type="module" src="js/registro.js"></script>
+<script type="module" src="js/login.js"></script>
     <script type="module">
   import { AuthService } from '/js/firebase/services/authService.js';
 
