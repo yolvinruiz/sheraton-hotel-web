@@ -1,4 +1,4 @@
-// js/admin/adminReservas.js
+// js/admin/adminReservas.js - VERSIÓN CORREGIDA
 import { ReservaService } from '../firebase/services/reservaService.js';
 import { UnidadHabitacionService } from '../firebase/services/unidadHabitacionService.js';
 import { TipoHabitacionService } from '../firebase/services/tipoHabitacionService.js';
@@ -33,7 +33,7 @@ class AdminReservas {
     this.cargarYMostrarReservas();
     this.cargarHabitacionesParaFiltros();
 
-    // Exponer métodos globalmente
+    // Exponer métodos globalmente - ACTUALIZADO
     window.adminReservas = {
       verDetalles: (id) => this.verDetallesReserva(id),
       editarReserva: (id) => this.editarReserva(id),
@@ -158,62 +158,66 @@ class AdminReservas {
   }
 
   // === RENDERIZADO ===
- renderReservas(reservas, titulo = null) {
-  let html = titulo ? `<h3>${titulo}</h3>` : `<h3>Reservas (${reservas.length})</h3>`;
-  
-  if (reservas.length === 0) {
-    html += `<p>No se encontraron reservas.</p>`;
-  } else {
-    html += `<div class="results-grid">`;
+  renderReservas(reservas, titulo = null) {
+    let html = titulo ? `<h3>${titulo}</h3>` : `<h3>Reservas (${reservas.length})</h3>`;
     
-    reservas.forEach(reserva => {
-      const habitacion = this.habitacionesDisponibles.find(h => h.id === reserva.unidadId);
-      const tipo = this.tiposHabitacion.find(t => t.id === habitacion?.tipoId);
-      const numeroHabitacion = habitacion ? habitacion.numero : reserva.unidadNumero || 'N/A';
-      const nombreTipo = tipo ? tipo.nombre : reserva.habitacionNombre || 'Tipo desconocido';
+    if (reservas.length === 0) {
+      html += `<p>No se encontraron reservas.</p>`;
+    } else {
+      html += `<div class="results-grid">`;
       
-      html += `
-        <div class="result-card">
-          <h4>
-            ${this.escapeHtml(reserva.huespedNombre || reserva.clienteNombre)}
-            <span class="reserva-id">${reserva.codigoReserva || `#${reserva.id.slice(-8)}`}</span>
-          </h4>
-          
-          <div class="reserva-info">
-            <p><strong>Email:</strong> ${reserva.huespedEmail || reserva.clienteEmail}</p>
-            <p><strong>Habitación:</strong> ${numeroHabitacion} (${nombreTipo})</p>
-            <p><strong>Check-in:</strong> ${this.formatearFecha(reserva.checkin || reserva.fechaCheckin)}</p>
-            <p><strong>Check-out:</strong> ${this.formatearFecha(reserva.checkout || reserva.fechaCheckout)}</p>
-            <p><strong>Noches:</strong> ${reserva.noches || 1}</p>
-            <p><strong>Total:</strong> S/${reserva.total || '0.00'}</p>
-          </div>
-          
-          <p><strong>Estado:</strong> 
-            <span class="estado-badge ${reserva.estado}">${this.formatearEstado(reserva.estado)}</span>
-          </p>
-          
-          <div class="card-actions">
-            <button class="btn btn-sm" onclick="window.adminReservas.verDetalles('${reserva.id}')">
-              <i class="fas fa-eye"></i> Detalles
-            </button>
-            <button class="btn btn-sm btn-secondary" onclick="window.adminReservas.editarReserva('${reserva.id}')">
-              <i class="fas fa-edit"></i> Editar
-            </button>
-            ${reserva.estado !== 'cancelada' && reserva.estado !== 'completada' ? `
-              <button class="btn btn-sm" style="background:#dc3545;" onclick="window.adminReservas.eliminarReserva('${reserva.id}')">
-                <i class="fas fa-trash"></i> Eliminar
+      reservas.forEach(reserva => {
+        const habitacion = this.habitacionesDisponibles.find(h => h.id === reserva.habitacionId);
+        const tipo = this.tiposHabitacion.find(t => t.id === habitacion?.tipoId);
+        const numeroHabitacion = habitacion ? habitacion.numero : 'N/A';
+        const nombreTipo = tipo ? tipo.nombre : 'Tipo desconocido';
+        
+        html += `
+          <div class="result-card">
+            <h4>
+              ${this.escapeHtml(reserva.clienteNombre)}
+              <span class="reserva-id">#${reserva.id.slice(-8)}</span>
+            </h4>
+            
+            <div class="reserva-info">
+              <p><strong>Email:</strong> ${reserva.clienteEmail}</p>
+              <p><strong>Teléfono:</strong> ${reserva.clienteTelefono}</p>
+              <p><strong>Habitación:</strong> ${numeroHabitacion} (${nombreTipo})</p>
+              <p><strong>Check-in:</strong> ${this.formatearFecha(reserva.fechaCheckin)}</p>
+              <p><strong>Check-out:</strong> ${this.formatearFecha(reserva.fechaCheckout)}</p>
+              <p><strong>Huéspedes:</strong> ${reserva.numeroHuespedes}</p>
+            </div>
+            
+            <p><strong>Estado:</strong> 
+              <span class="estado-badge ${reserva.estado}">${this.formatearEstado(reserva.estado)}</span>
+            </p>
+            
+            <div class="total-reserva">
+              Total: S/${reserva.total || '0.00'}
+            </div>
+            
+            <div class="card-actions">
+              <button class="btn btn-sm" onclick="window.adminReservas.verDetalles('${reserva.id}')">
+                <i class="fas fa-eye"></i> Detalles
               </button>
-            ` : ''}
+              <button class="btn btn-sm btn-secondary" onclick="window.adminReservas.editarReserva('${reserva.id}')">
+                <i class="fas fa-edit"></i> Editar
+              </button>
+              ${reserva.estado !== 'cancelada' && reserva.estado !== 'completada' ? `
+                <button class="btn btn-sm" style="background:#dc3545;" onclick="window.adminReservas.eliminarReserva('${reserva.id}')">
+                  <i class="fas fa-trash"></i> Eliminar
+                </button>
+              ` : ''}
+            </div>
           </div>
-        </div>
-      `;
-    });
+        `;
+      });
+      
+      html += `</div>`;
+    }
     
-    html += `</div>`;
+    this.contenedores.resultados.innerHTML = html;
   }
-  
-  this.contenedores.resultados.innerHTML = html;
-}
 
   // === MÉTODOS PARA RESERVAS ===
   async editarReserva(id) {
@@ -243,36 +247,47 @@ class AdminReservas {
     }
   }
 
-async cambiarEstadoReserva(id, nuevoEstado) {
-  try {
-    console.log("🔄 Cambiando estado de reserva:", id, "a:", nuevoEstado);
-    
-    // Obtener la reserva actual primero para no perder datos
-    const reservaActual = await ReservaService.obtenerPorId(id);
-    if (!reservaActual) {
-      alert('❌ Reserva no encontrada');
-      return;
+  // === MÉTODO CAMBIAR ESTADO - COMPLETAMENTE CORREGIDO ===
+  async cambiarEstadoReserva(id, nuevoEstado) {
+    try {
+      console.log("🔄 Cambiando estado de reserva:", id, "a:", nuevoEstado);
+      
+      // Obtener la reserva actual para preservar todos los datos
+      const reservaActual = await ReservaService.obtenerPorId(id);
+      if (!reservaActual) {
+        alert('❌ Reserva no encontrada');
+        return;
+      }
+
+      // Crear objeto de actualización que mantenga todos los campos existentes
+      // y solo cambie el estado
+      const datosActualizacion = {
+        estado: nuevoEstado
+      };
+
+      console.log("📤 Enviando actualización:", datosActualizacion);
+
+      // Usar el método actualizar del servicio
+      await ReservaService.actualizar(id, datosActualizacion);
+      
+      alert(`✅ Estado de reserva actualizado a: ${this.formatearEstado(nuevoEstado)}`);
+      
+      // Recargar y actualizar la vista
+      await this.cargarYMostrarReservas();
+      
+      // Si el modal de detalles está abierto, actualizarlo también
+      if (this.modales.detalles.style.display === 'flex') {
+        const reservaActualizada = await ReservaService.obtenerPorId(id);
+        if (reservaActualizada) {
+          this.mostrarDetallesReserva(reservaActualizada);
+        }
+      }
+      
+    } catch (error) {
+      console.error("❌ Error al cambiar estado:", error);
+      alert('❌ Error al cambiar el estado de la reserva: ' + error.message);
     }
-
-    // Actualizar solo el campo estado, manteniendo todos los demás datos
-    const datosActualizados = {
-      estado: nuevoEstado,
-      // Mantener todos los campos existentes
-      ...reservaActual
-    };
-
-    await ReservaService.actualizar(id, datosActualizados);
-    alert(`✅ Estado de reserva actualizado a: ${this.formatearEstado(nuevoEstado)}`);
-    
-    // Recargar y cerrar modales
-    await this.cargarYMostrarReservas();
-    this.cerrarTodosLosModales();
-    
-  } catch (error) {
-    console.error("❌ Error al cambiar estado:", error);
-    alert('❌ Error al cambiar el estado de la reserva');
   }
-}
 
   async verDetallesReserva(id) {
     try {
@@ -286,6 +301,76 @@ async cambiarEstadoReserva(id, nuevoEstado) {
       console.error("Error al cargar detalles:", error);
       alert('❌ Error al cargar los detalles de la reserva');
     }
+  }
+
+  // === DETALLES DE RESERVA - SIN BOTÓN DE EDITAR ===
+  async mostrarDetallesReserva(reserva) {
+    const habitacion = this.habitacionesDisponibles.find(h => h.id === reserva.unidadId);
+    const tipo = this.tiposHabitacion.find(t => t.id === habitacion?.tipoId);
+    
+    let html = `
+      <div class="reserva-info" style="grid-template-columns: 1fr; gap: 15px;">
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+          <h3 style="margin-bottom: 10px; color: var(--primary);">Información del Cliente</h3>
+          <p><strong>Nombre:</strong> ${reserva.huespedNombre || reserva.clienteNombre}</p>
+          <p><strong>Email:</strong> ${reserva.huespedEmail || reserva.clienteEmail}</p>
+          <p><strong>Teléfono:</strong> ${reserva.clienteTelefono || 'No especificado'}</p>
+          ${reserva.clienteDocumento ? `<p><strong>Documento:</strong> ${reserva.clienteDocumento}</p>` : ''}
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+          <h3 style="margin-bottom: 10px; color: var(--primary);">Detalles de la Reserva</h3>
+          <p><strong>Habitación:</strong> ${habitacion ? `Habitación ${habitacion.numero}` : 'N/A'} ${tipo ? `(${tipo.nombre})` : ''}</p>
+          <p><strong>Check-in:</strong> ${this.formatearFecha(reserva.checkin)}</p>
+          <p><strong>Check-out:</strong> ${this.formatearFecha(reserva.checkout)}</p>
+          <p><strong>Noches:</strong> ${this.calcularNoches(reserva.checkin, reserva.checkout)}</p>
+          <p><strong>Huéspedes:</strong> ${reserva.numeroHuespedes}</p>
+          <p><strong>Estado:</strong> <span class="estado-badge ${reserva.estado}">${this.formatearEstado(reserva.estado)}</span></p>
+          ${reserva.total ? `<p><strong>Total:</strong> S/${reserva.total}</p>` : ''}
+        </div>
+        
+        ${reserva.notas ? `
+          <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+            <h3 style="margin-bottom: 10px; color: var(--primary);">Notas Adicionales</h3>
+            <p>${reserva.notas}</p>
+          </div>
+        ` : ''}
+      </div>
+      
+      <div class="card-actions" style="margin-top: 20px; justify-content: center;">
+    `;
+    
+    // Botones para cambiar estado (según estado actual) - CORREGIDOS
+    if (reserva.estado === 'pendiente') {
+      html += `
+        <button class="btn" onclick="window.adminReservas.cambiarEstado('${reserva.id}', 'confirmada')">
+          <i class="fas fa-check"></i> Confirmar
+        </button>
+        <button class="btn" style="background:#dc3545;" onclick="window.adminReservas.cambiarEstado('${reserva.id}', 'cancelada')">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+      `;
+    } else if (reserva.estado === 'confirmada') {
+      html += `
+        <button class="btn" onclick="window.adminReservas.cambiarEstado('${reserva.id}', 'activa')">
+          <i class="fas fa-play"></i> Marcar como Activa
+        </button>
+        <button class="btn" style="background:#dc3545;" onclick="window.adminReservas.cambiarEstado('${reserva.id}', 'cancelada')">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+      `;
+    } else if (reserva.estado === 'activa') {
+      html += `
+        <button class="btn" onclick="window.adminReservas.cambiarEstado('${reserva.id}', 'completada')">
+          <i class="fas fa-flag-checkered"></i> Completar
+        </button>
+      `;
+    }
+    
+    html += `</div>`;
+    
+    this.contenedores.detalles.innerHTML = html;
+    this.abrirModal(this.modales.detalles);
   }
 
   // === MÉTODOS DE FORMULARIO ===
@@ -484,105 +569,23 @@ async cambiarEstadoReserva(id, nuevoEstado) {
     return errores;
   }
 
-  // === DETALLES DE RESERVA ===
-  async mostrarDetallesReserva(reserva) {
-    const habitacion = this.habitacionesDisponibles.find(h => h.id === reserva.habitacionId);
-    const tipo = this.tiposHabitacion.find(t => t.id === habitacion?.tipoId);
-    
-    let html = `
-      <div class="reserva-info" style="grid-template-columns: 1fr; gap: 15px;">
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
-          <h3 style="margin-bottom: 10px; color: var(--primary);">Información del Cliente</h3>
-          <p><strong>Nombre:</strong> ${reserva.clienteNombre}</p>
-          <p><strong>Email:</strong> ${reserva.clienteEmail}</p>
-          <p><strong>Teléfono:</strong> ${reserva.clienteTelefono}</p>
-          ${reserva.clienteDocumento ? `<p><strong>Documento:</strong> ${reserva.clienteDocumento}</p>` : ''}
-        </div>
-        
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
-          <h3 style="margin-bottom: 10px; color: var(--primary);">Detalles de la Reserva</h3>
-          <p><strong>Habitación:</strong> ${habitacion ? `Habitación ${habitacion.numero}` : 'N/A'} ${tipo ? `(${tipo.nombre})` : ''}</p>
-          <p><strong>Check-in:</strong> ${this.formatearFecha(reserva.fechaCheckin)}</p>
-          <p><strong>Check-out:</strong> ${this.formatearFecha(reserva.fechaCheckout)}</p>
-          <p><strong>Noches:</strong> ${this.calcularNoches(reserva.fechaCheckin, reserva.fechaCheckout)}</p>
-          <p><strong>Huéspedes:</strong> ${reserva.numeroHuespedes}</p>
-          <p><strong>Estado:</strong> <span class="estado-badge ${reserva.estado}">${this.formatearEstado(reserva.estado)}</span></p>
-          ${reserva.total ? `<p><strong>Total:</strong> S/${reserva.total}</p>` : ''}
-        </div>
-        
-        ${reserva.notas ? `
-          <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
-            <h3 style="margin-bottom: 10px; color: var(--primary);">Notas Adicionales</h3>
-            <p>${reserva.notas}</p>
-          </div>
-        ` : ''}
-      </div>
-      
-      <div class="card-actions" style="margin-top: 20px; justify-content: center;">
-        <button class="btn btn-secondary" onclick="window.adminReservas.abrirEdicionDesdeDetalles('${reserva.id}')">
-          <i class="fas fa-edit"></i> Editar Reserva
-        </button>
-    `;
-    
-    // Botones para cambiar estado (según estado actual)
-    if (reserva.estado === 'pendiente') {
-      html += `
-        <button class="btn" onclick="window.adminReservas.cambiarEstado('${reserva.id}', 'confirmada')">
-          <i class="fas fa-check"></i> Confirmar
-        </button>
-        <button class="btn" style="background:#dc3545;" onclick="window.adminReservas.cambiarEstado('${reserva.id}', 'cancelada')">
-          <i class="fas fa-times"></i> Cancelar
-        </button>
-      `;
-    } else if (reserva.estado === 'confirmada') {
-      html += `
-        <button class="btn" onclick="window.adminReservas.cambiarEstado('${reserva.id}', 'activa')">
-          <i class="fas fa-play"></i> Marcar como Activa
-        </button>
-        <button class="btn" style="background:#dc3545;" onclick="window.adminReservas.cambiarEstado('${reserva.id}', 'cancelada')">
-          <i class="fas fa-times"></i> Cancelar
-        </button>
-      `;
-    } else if (reserva.estado === 'activa') {
-      html += `
-        <button class="btn" onclick="window.adminReservas.cambiarEstado('${reserva.id}', 'completada')">
-          <i class="fas fa-flag-checkered"></i> Completar
-        </button>
-      `;
-    }
-    
-    html += `</div>`;
-    
-    this.contenedores.detalles.innerHTML = html;
-    this.abrirModal(this.modales.detalles);
+  // === MÉTODOS AUXILIARES ===
+  abrirModal(modal) {
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
   }
 
-  // === MÉTODOS AUXILIARES ===
-abrirModal(modal) {
-  // Cerrar todos los modales primero para evitar superposiciones
-  this.cerrarTodosLosModales();
-  
-  modal.style.display = 'flex';
-  modal.style.zIndex = '1000';
-  document.body.style.overflow = 'hidden';
-  
-  // Asegurar que esté al frente
-  setTimeout(() => {
-    modal.style.opacity = '1';
-  }, 10);
-}
-cerrarModal(modal) {
-  modal.style.display = 'none';
-  modal.style.zIndex = '0';
-}
+  cerrarModal(modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
 
-cerrarTodosLosModales() {
-  Object.values(this.modales).forEach(m => {
-    m.style.display = 'none';
-    m.style.zIndex = '0';
-  });
-  document.body.style.overflow = 'auto';
-}
+  cerrarTodosLosModales() {
+    Object.values(this.modales).forEach(m => m.style.display = 'none');
+    document.body.style.overflow = 'auto';
+    this.formularios.reserva?.reset();
+    document.getElementById('reserva-id').value = '';
+  }
 
   formatearFecha(fecha) {
     return new Date(fecha).toLocaleDateString('es-ES', {
@@ -591,24 +594,7 @@ cerrarTodosLosModales() {
       day: 'numeric'
     });
   }
-async abrirEdicionDesdeDetalles(id) {
-  try {
-    // 1. Cerrar modal de detalles
-    this.cerrarModal(this.modales.detalles);
-    
-    // 2. Pequeña pausa para asegurar el cierre
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    // 3. Abrir modal de edición
-    const reserva = await ReservaService.obtenerPorId(id);
-    if (reserva) {
-      this.abrirModalReserva(id, reserva);
-    }
-  } catch (error) {
-    console.error("Error al abrir edición:", error);
-    alert('❌ Error al cargar la reserva para editar');
-  }
-}
+
   formatearEstado(estado) {
     const estados = {
       'pendiente': 'Pendiente',

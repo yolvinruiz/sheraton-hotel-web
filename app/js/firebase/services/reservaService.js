@@ -9,7 +9,7 @@ import {
 export class ReservaService {
   static async listar() {
     try {
-      console.log("📥 Cargando reservas...");
+      console.log("📥 Cargando reservas para dashboard...");
       if (!db) {
         throw new Error("Firestore no está inicializado");
       }
@@ -21,43 +21,38 @@ export class ReservaService {
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         
-        // 🔄 TRANSFORMAR LOS CAMPOS para que coincidan con lo que espera el código
+        // Transformación mejorada para el dashboard
         const reservaTransformada = {
           id: doc.id,
-          // Campos transformados
+          // Campos principales para dashboard
           clienteNombre: data.huespedNombre || '',
           clienteEmail: data.huespedEmail || '',
-          clienteTelefono: data.huespedTelefono || 'No especificado', // Campo que no existe
-          clienteDocumento: data.huespedDocumento || 'No especificado', // Campo que no existe
           habitacionId: data.unidadId || '',
           fechaCheckin: data.checkin || '',
           fechaCheckout: data.checkout || '',
-          numeroHuespedes: data.numeroHuespedes || 1, // Campo que no existe - valor por defecto
           estado: data.estado || 'pendiente',
-          notas: data.notas || '', // Campo que no existe
           total: data.total || 0,
           
-          // Mantener los campos originales también por si acaso
-          ...data,
-          
-          // Campos específicos de tu estructura
+          // Campos específicos de tu estructura para el dashboard
           codigoReserva: data.codigoReserva,
           habitacionNombre: data.habitacionNombre,
           habitacionPrecio: data.habitacionPrecio,
           huespedId: data.huespedId,
+          huespedNombre: data.huespedNombre,
+          huespedEmail: data.huespedEmail,
           metodoPago: data.metodoPago || {},
           servicios: data.servicios || [],
           tipoHabitacionId: data.tipoHabitacionId,
           unidadId: data.unidadId,
           unidadNumero: data.unidadNumero,
-          noches: data.noches || 1
+          noches: data.noches || 1,
+          fechaCreacion: data.fechaCreacion ? data.fechaCreacion.toDate() : new Date()
         };
         
         reservas.push(reservaTransformada);
       });
       
-      console.log("✅ Reservas cargadas y transformadas:", reservas.length);
-      console.log("Ejemplo de reserva transformada:", reservas[0]);
+      console.log("✅ Reservas cargadas para dashboard:", reservas.length);
       return reservas;
     } catch (error) {
       console.error("❌ Error en ReservaService.listar:", error);

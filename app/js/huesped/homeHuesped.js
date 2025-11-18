@@ -436,6 +436,9 @@ actualizarEstadoBotonReserva() {
         document.getElementById('perfil-btn')?.addEventListener('click', () => {
             window.location.href = 'perfil.html';
         });
+            document.getElementById('history-btn')?.addEventListener('click', () => {
+        window.location.href = 'historial.html';
+         });
 
         // Eventos del carrito (SOLO UNA VEZ - SIN DUPLICADOS)
         const cartToggle = document.getElementById('nav-cart-toggle');
@@ -481,7 +484,6 @@ actualizarEstadoBotonReserva() {
         console.log("✅ Eventos configurados");
     }
 
-    // ... (el resto de los métodos se mantienen igual - bindSearchEvents, bindFilterEvents, etc.)
 
     bindSearchEvents() {
         const searchInput = document.getElementById('search');
@@ -546,6 +548,7 @@ actualizarEstadoBotonReserva() {
                 this.switchTab(tabName);
             });
         });
+        
     }
 
     switchTab(tabName) {
