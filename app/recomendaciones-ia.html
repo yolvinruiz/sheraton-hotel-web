@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+        <link rel="stylesheet" href="css/recomendacionesIa.css">
+<head>
+    <meta charset="UTF-8">
+    <title>Recomendaciones IA</title>
+
+    <style>
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #ddd;
+            border-top: 4px solid #6c63ff;
+            border-radius: 50%;
+            margin: 20px auto;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg);} }
+
+        .grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+        .card {
+            padding: 1rem;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .btn, .btn-primary {
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background: #6c63ff;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Recomendaciones con IA</h1>
+
+    <button onclick="loadRecommendations()">Generar Recomendaciones</button>
+
+    <div id="recommendations-main-container"></div>
+<script type="module" src="./js/controllers/recomendacionesController.js"></script>
+<script type="module">
+    import { recommendationEngine } from "./js/components/RecommendationEngine.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+
+    onAuthStateChanged(getAuth(), async (user) => {
+        if (user) {
+            localStorage.setItem("loggedUserId", user.uid);
+            await recomendacionesController.init();
+        }
+    });
+
+    window.loadRecommendations = async () => {
+        const uid = localStorage.getItem("loggedUserId");
+
+        await recommendationEngine.initialize(
+            document.getElementById("recommendations-main-container"),
+            {
+                userId: uid,
+
+            }
+        );
+    };
+</script>
+
+
+</body>
+</html>

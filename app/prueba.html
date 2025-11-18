@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba API Gemini 2.5</title>
+</head>
+<body>
+    <h2>Test API Gemini 2.5</h2>
+
+    <input id="prompt" type="text" placeholder="Escribe algo..." style="width:300px;">
+    <button onclick="sendPrompt()">Enviar</button>
+
+    <pre id="response"></pre>
+
+    <script>
+        const API_KEY = "AIzaSyDrR2acWEGMCXrgE8KTCUicFRTrsCpR32M";
+        const MODEL = "gemini-2.5-flash"; 
+        const URL_API = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
+
+        async function sendPrompt() {
+            const userText = document.getElementById("prompt").value;
+            document.getElementById("response").textContent = "Cargando...";
+
+            try {
+                const response = await fetch(URL_API, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: userText }]
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+
+                console.log(data);
+
+                if (data.candidates) {
+                    document.getElementById("response").textContent =
+                        data.candidates[0].content.parts[0].text;
+                } else {
+                    document.getElementById("response").textContent =
+                        "Error en la respuesta: " + JSON.stringify(data, null, 2);
+                }
+
+            } catch (error) {
+                document.getElementById("response").textContent = "Error: " + error;
+            }
+        }
+    </script>
+</body>
+</html>

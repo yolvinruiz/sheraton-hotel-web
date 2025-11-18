@@ -8,6 +8,78 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/huesped.css">
 </head>
+
+<style>
+    .ai-recommendations-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 20px;
+        margin: 3rem auto;
+        padding: 3rem 2rem;
+    }
+
+    .ai-recommendations-cta {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .cta-content h3 {
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        font-size: 1.8rem;
+    }
+
+    .cta-content p {
+        color: #7f8c8d;
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .btn-ai {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-ai:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+    }
+
+    .ai-features {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .ai-features span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #667eea;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .ai-features {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .ai-recommendations-section {
+            padding: 2rem 1rem;
+        }
+    }
+</style>
 <body>
     <!-- Header -->
     <header>
@@ -101,7 +173,24 @@
             </div>
         </div>
     </section>
-
+<section class="section ai-recommendations-section">
+    <div class="container">
+        <div class="ai-recommendations-cta">
+            <div class="cta-content">
+                <h3><i class="fas fa-robot"></i> ¿Quieres recomendaciones personalizadas?</h3>
+                <p>Nuestra inteligencia artificial analiza tu perfil, preferencias y selección actual para sugerirte servicios perfectos para ti.</p>
+                <button class="btn btn-ai" onclick="goToAIRecommendations()">
+                    <i class="fas fa-magic"></i> Ver Recomendaciones con IA
+                </button>
+                <div class="ai-features">
+                    <span><i class="fas fa-user-check"></i> Basado en tu perfil</span>
+                    <span><i class="fas fa-history"></i> Considera tu historial</span>
+                    <span><i class="fas fa-bolt"></i> Tiempo real</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
     <!-- Tabs Section -->
     <section class="container">
         <div class="tabs-section">
@@ -312,7 +401,89 @@
         <i class="fas fa-check-circle"></i>
         <span id="notification-text">Servicio agregado correctamente</span>
     </div>
+<script>
+    // Función para ir a las recomendaciones IA
+    function goToAIRecommendations() {
+        // Guardar la habitación seleccionada actual
+        const selectedRoom = getSelectedRoom();
+        if (selectedRoom) {
+            localStorage.setItem('aiSelectedRoom', JSON.stringify(selectedRoom));
+            console.log("💾 Habitación guardada para IA:", selectedRoom);
+        } else {
+            console.log("⚠️ No hay habitación seleccionada");
+        }
 
+        // Guardar servicios seleccionados actuales
+        const selectedServices = getCurrentServices();
+        if (selectedServices && selectedServices.length > 0) {
+            localStorage.setItem('aiSelectedServices', JSON.stringify(selectedServices));
+            console.log("💾 Servicios guardados para IA:", selectedServices);
+        }
+
+        // Redirigir a la página de recomendaciones IA
+        window.location.href = 'recomendaciones-ia.html';
+    }
+
+    // Funciones auxiliares (debes adaptarlas a tu implementación existente)
+    function getSelectedRoom() {
+        // Esta función debe retornar la habitación actualmente seleccionada
+        // Por ejemplo, si tienes una variable global o un sistema de estado
+        return window.currentSelectedRoom || null;
+    }
+
+    function getCurrentServices() {
+        // Esta función debe retornar los servicios actualmente en el carrito
+        // Por ejemplo:
+        if (window.carrito && window.carrito.servicios) {
+            return window.carrito.servicios;
+        }
+        
+        // O del localStorage
+        try {
+            return JSON.parse(localStorage.getItem('carritoSheraton') || '[]');
+        } catch (e) {
+            return [];
+        }
+    }
+
+    // También puedes agregar un botón en cada tarjeta de habitación
+    function addAIButtonToRoomCards() {
+        document.querySelectorAll('.room-card').forEach(card => {
+            const aiButton = document.createElement('button');
+            aiButton.className = 'btn btn-outline btn-sm';
+            aiButton.innerHTML = '<i class="fas fa-robot"></i> Recomendaciones IA';
+            aiButton.onclick = function(e) {
+                e.stopPropagation();
+                const roomData = this.closest('.room-card').dataset.room;
+                if (roomData) {
+                    localStorage.setItem('aiSelectedRoom', roomData);
+                    window.location.href = 'recomendaciones-ia.html';
+                }
+            };
+            
+            const actionsDiv = card.querySelector('.card-actions');
+            if (actionsDiv) {
+                actionsDiv.appendChild(aiButton);
+            }
+        });
+    }
+
+    // Ejecutar cuando la página cargue
+    document.addEventListener('DOMContentLoaded', function() {
+        // Agregar botones a las tarjetas de habitación
+        setTimeout(addAIButtonToRoomCards, 1000);
+        
+        // También puedes hacer que al seleccionar una habitación se guarde automáticamente
+        const originalSelectRoom = window.selectRoom; // Guardar referencia original
+        if (originalSelectRoom) {
+            window.selectRoom = function(room) {
+                originalSelectRoom(room); // Llamar a la función original
+                localStorage.setItem('aiSelectedRoom', JSON.stringify(room));
+                console.log("💾 Habitación automáticamente guardada para IA");
+            };
+        }
+    });
+</script>
     <!-- Scripts de Firebase -->
     <script type="module" src="js/firebase/config.js"></script>
     <script type="module" src="js/firebase/services/tipoHabitacionService.js"></script>

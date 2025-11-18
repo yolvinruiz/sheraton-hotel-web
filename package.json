@@ -1,17 +1,18 @@
 {
     "name": "sheraton",
-  "version": "1.0.0",
-  "description": "Aplicación web del hotel Sheraton con Firebase",
-  "type": "module",
-  "scripts": {
-    "dev": "vite ./app",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "firebase": "^12.4.0"
-  },
-  "devDependencies": {
-    "vite": "^7.1.9"
-  }
+    "version": "1.0.0",
+    "description": "Aplicación web del hotel Sheraton con Firebase",
+    "type": "module",
+    "scripts": {
+        "dev": "vite ./app",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "@google/genai": "^1.29.0",
+        "firebase": "^12.4.0"
+    },
+    "devDependencies": {
+        "vite": "^7.1.9"
+    }
 }
